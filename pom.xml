@@ -64,6 +64,14 @@
 
     <build>
         <finalName>placement</finalName>
+        <resources>
+            <resource><directory>src/main/resources</directory></resource>
+            <!-- ship schema.sql inside the WAR so hosted deployments can create the tables -->
+            <resource>
+                <directory>db</directory>
+                <includes><include>schema.sql</include></includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

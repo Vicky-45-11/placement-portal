@@ -32,8 +32,23 @@ public final class Config {
         return PROPS.getProperty(key, fallback);
     }
 
-    public static String dbUrl()      { return get("db.url", "DB_URL", "jdbc:mysql://localhost:3306/placement_db"); }
-    public static String dbUser()     { return get("db.user", "DB_USER", "root"); }
-    public static String dbPassword() { return get("db.password", "DB_PASSWORD", ""); }
+    public static String dbUrl() {
+        // Railway's MySQL plugin exposes MYSQLHOST/MYSQLPORT/MYSQLDATABASE; use them when DB_URL is not set.
+        String host = System.getenv("MYSQLHOST");
+        if (isBlank(System.getenv("DB_URL")) && !isBlank(host)) {
+            String port = envOr("MYSQLPORT", "3306");
+            String db = envOr("MYSQLDATABASE", "railway");
+            return "jdbc:mysql://" + host + ":" + port + "/" + db
+                    + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata";
+        }
+        return get("db.url", "DB_URL", "jdbc:mysql://localhost:3306/placement_db");
+    }
+    public static String dbUser()     { return isBlank(System.getenv("DB_USER")) && !isBlank(System.getenv("MYSQLUSER")) ? System.getenv("MYSQLUSER") : get("db.user", "DB_USER", "root"); }
+    public static String dbPassword() { return isBlank(System.getenv("DB_PASSWORD")) && System.getenv("MYSQLPASSWORD") != null ? System.getenv("MYSQLPASSWORD") : get("db.password", "DB_PASSWORD", ""); }
+    /** When true, an empty database gets the tables and sample data on startup (used for cloud hosting). */
+    public static boolean autoInitDb() { return "true".equalsIgnoreCase(get("db.autoInit", "DB_AUTO_INIT", "false")); }
+
+    private static boolean isBlank(String s) { return s == null || s.isBlank(); }
+    private static String envOr(String name, String fallback) { String v = System.getenv(name); return isBlank(v) ? fallback : v; }
     public static String uploadDir()  { return get("upload.dir", "UPLOAD_DIR", "uploads"); }
 }

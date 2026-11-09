@@ -120,6 +120,10 @@ Open http://localhost:8080/placement/
 
 Sample students have no resume file yet, so upload any PDF from **Profile & resume** before applying. Company names in the sample data are fictional.
 
+## Put it online
+
+See **[DEPLOY.md](DEPLOY.md)**. The included `Dockerfile` runs on Railway or Render, and creates the tables and sample data on first start. Vercel cannot host it, because it only runs static sites and short functions, not a Java server with MySQL.
+
 ## Try this walkthrough
 1. Log in as **arun@student.college.edu**, upload a PDF resume, and apply to *Cloud Intern*.
 2. Log in as **hr@nimbustech.example**, open *My drives → Applicants* for Cloud Intern, schedule a Technical round, then mark Arun **SELECTED**.
