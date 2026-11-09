@@ -1,0 +1,67 @@
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<c:set var="role" value="${sessionScope.role}" />
+<c:set var="area" value="${fn:toLowerCase(role)}" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><c:out value="${empty pageTitle ? 'Placement Portal' : pageTitle}"/> · Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${ctx}/assets/style.css">
+</head>
+<body>
+<c:choose>
+<c:when test="${not empty role}">
+<div class="shell">
+    <aside class="side">
+        <div class="brand"><span class="brand-mark">CP</span><span>Placement Portal<small>College Placement Cell</small></span></div>
+        <nav class="nav">
+            <c:choose>
+                <c:when test="${role == 'ADMIN'}">
+                    <a href="${ctx}/admin/" class="${nav == 'dashboard' ? 'active' : ''}">Dashboard</a>
+                    <a href="${ctx}/admin/students" class="${nav == 'students' ? 'active' : ''}">Students</a>
+                    <a href="${ctx}/admin/companies" class="${nav == 'companies' ? 'active' : ''}">Companies</a>
+                    <a href="${ctx}/admin/jobs" class="${nav == 'jobs' ? 'active' : ''}">Drives</a>
+                    <a href="${ctx}/admin/applications" class="${nav == 'applications' ? 'active' : ''}">Applications</a>
+                    <a href="${ctx}/admin/interviews" class="${nav == 'interviews' ? 'active' : ''}">Interviews</a>
+                    <a href="${ctx}/admin/reports" class="${nav == 'reports' ? 'active' : ''}">Reports</a>
+                    <a href="${ctx}/admin/announcements" class="${nav == 'announcements' ? 'active' : ''}">Announcements</a>
+                </c:when>
+                <c:when test="${role == 'STUDENT'}">
+                    <a href="${ctx}/student/" class="${nav == 'dashboard' ? 'active' : ''}">Dashboard</a>
+                    <a href="${ctx}/student/jobs" class="${nav == 'jobs' ? 'active' : ''}">Job drives</a>
+                    <a href="${ctx}/student/applications" class="${nav == 'applications' ? 'active' : ''}">My applications</a>
+                    <a href="${ctx}/student/profile" class="${nav == 'profile' ? 'active' : ''}">Profile &amp; resume</a>
+                </c:when>
+                <c:when test="${role == 'COMPANY'}">
+                    <a href="${ctx}/company/" class="${nav == 'dashboard' ? 'active' : ''}">Dashboard</a>
+                    <a href="${ctx}/company/jobs" class="${nav == 'jobs' ? 'active' : ''}">My drives</a>
+                    <a href="${ctx}/company/job/new" class="${nav == 'newjob' ? 'active' : ''}">Post a drive</a>
+                    <a href="${ctx}/company/interviews" class="${nav == 'interviews' ? 'active' : ''}">Interviews</a>
+                    <a href="${ctx}/company/profile" class="${nav == 'profile' ? 'active' : ''}">Company profile</a>
+                </c:when>
+            </c:choose>
+            <div class="sep"></div>
+            <a href="${ctx}/account" class="${nav == 'account' ? 'active' : ''}">Change password</a>
+        </nav>
+        <div class="who">
+            <strong><c:out value="${sessionScope.userName}"/></strong>
+            <span><c:out value="${role == 'COMPANY' ? sessionScope.companyName : fn:toLowerCase(role)}"/></span>
+            <form method="post" action="${ctx}/logout"><input type="hidden" name="_csrf" value="${sessionScope.csrf}"><button class="link-btn">Log out</button></form>
+        </div>
+    </aside>
+    <main class="main">
+</c:when>
+<c:otherwise>
+<header class="topbar"><div class="inner">
+    <a href="${ctx}/" class="brand"><span class="brand-mark">CP</span><span>Placement Portal<small>College Placement Cell</small></span></a>
+    <div class="actions"><a class="btn ghost sm" href="${ctx}/login">Log in</a><a class="btn sm" href="${ctx}/register">Register</a></div>
+</div></header>
+<main class="wrap">
+</c:otherwise>
+</c:choose>
+<c:if test="${not empty sessionScope.flash}"><div class="alert ok"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
+<c:if test="${not empty sessionScope.flashError}"><div class="alert bad"><c:out value="${sessionScope.flashError}"/></div><c:remove var="flashError" scope="session"/></c:if>
+<c:if test="${not empty error}"><div class="alert bad"><c:out value="${error}"/></div></c:if>
