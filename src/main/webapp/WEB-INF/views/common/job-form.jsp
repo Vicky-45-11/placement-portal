@@ -39,6 +39,8 @@
                     <option value="CLOSED" ${job.status == 'CLOSED' ? 'selected' : ''}>Closed</option>
                 </select></div>
         </div>
+        <label>Skills you are looking for <span class="hint">(comma separated, used to score how well each applicant matches)</span></label>
+        <input type="text" name="requiredSkills" value="<c:out value='${job.requiredSkills}'/>" placeholder="Java, SQL, Spring Boot">
         <label>Eligible departments <span class="hint">(tick none or all for every department)</span></label>
         <div class="checks">
             <c:forEach items="${departments}" var="d">

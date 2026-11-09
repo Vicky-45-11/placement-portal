@@ -29,6 +29,15 @@ public class Application {
     private String skills;
     private String resumeFile;
     private List<Interview> interviews = new ArrayList<>();
+    private SkillMatch match;
+
+    public SkillMatch getMatch() { return match; }
+    public void setMatch(SkillMatch match) { this.match = match; }
+    public String getInitials() {
+        if (studentName == null || studentName.isBlank()) return "?";
+        String[] p = studentName.trim().split("\\s+");
+        return (p[0].substring(0, 1) + (p.length > 1 ? p[p.length - 1].substring(0, 1) : "")).toUpperCase();
+    }
 
     /** Position in the pipeline: 0 applied, 1 shortlisted, 2 interview, 3 selected, -1 rejected. */
     public int getStageIndex() {

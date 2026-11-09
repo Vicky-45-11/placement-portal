@@ -75,6 +75,7 @@ final class Rows {
         j.setMinCgpa(rs.getBigDecimal("min_cgpa"));
         j.setMaxBacklogs(rs.getInt("max_backlogs"));
         j.setEligibleDepartments(rs.getString("eligible_departments"));
+        j.setRequiredSkills(rs.getString("required_skills"));
         j.setDeadline(rs.getDate("deadline").toLocalDate());
         j.setStatus(rs.getString("status"));
         j.setApplicantCount(rs.getInt("applicant_count"));

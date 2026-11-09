@@ -26,7 +26,8 @@ public class DbInitializer implements ServletContextListener {
         try (Connection c = DB.get(); Statement st = c.createStatement()) {
             try (ResultSet rs = c.getMetaData().getTables(c.getCatalog(), null, "users", new String[]{"TABLE"})) {
                 if (rs.next()) {
-                    event.getServletContext().log("DbInitializer: tables already exist, skipping setup.");
+                    migrate(c, st);
+                    event.getServletContext().log("DbInitializer: tables already exist, checked migrations.");
                     return;
                 }
             }
@@ -45,6 +46,21 @@ public class DbInitializer implements ServletContextListener {
             event.getServletContext().log("DbInitializer: created schema and sample data (" + count + " statements).");
         } catch (Exception e) {
             event.getServletContext().log("DbInitializer: database setup failed", e);
+        }
+    }
+
+    /** Small in-place upgrades for databases created by an older version of schema.sql. */
+    private static void migrate(Connection c, Statement st) throws java.sql.SQLException {
+        try (ResultSet col = c.getMetaData().getColumns(c.getCatalog(), null, "jobs", "required_skills")) {
+            if (col.next()) return;
+        }
+        st.execute("ALTER TABLE jobs ADD COLUMN required_skills VARCHAR(300) AFTER eligible_departments");
+        String[][] seed = {
+            {"Software Engineer", "Java, Spring Boot, SQL, DSA"}, {"Data Analyst", "SQL, Python, Power BI, Excel"},
+            {"Graduate Engineer Trainee", "AutoCAD, SolidWorks, Quality Control"}, {"Cloud Intern", "AWS, Linux, Docker, Python"},
+            {"ML Engineer", "Python, Machine Learning, SQL"}, {"EV Systems Engineer", "Power Systems, Embedded C, MATLAB, PLC"}};
+        try (java.sql.PreparedStatement ps = c.prepareStatement("UPDATE jobs SET required_skills = ? WHERE title = ? AND required_skills IS NULL")) {
+            for (String[] row : seed) { ps.setString(1, row[1]); ps.setString(2, row[0]); ps.executeUpdate(); }
         }
     }
 

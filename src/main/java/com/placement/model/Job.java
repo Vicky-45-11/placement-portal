@@ -16,12 +16,14 @@ public class Job {
     private BigDecimal minCgpa = BigDecimal.ZERO;
     private int maxBacklogs;
     private String eligibleDepartments = "ALL";
+    private String requiredSkills;
     private LocalDate deadline;
     private String status = "OPEN";
     private int applicantCount;
     // per-student fields, set when listing jobs for a student
     private String applicationStatus;
     private String ineligibleReason;
+    private SkillMatch match;
 
     /** True while the drive is open and the deadline has not passed. */
     public boolean isAcceptingApplications() {
@@ -45,7 +47,26 @@ public class Job {
     }
 
     public String getDeadlineText() { return Fmt.date(deadline); }
+
+    /** Days until the deadline (negative when passed). */
+    public long getDaysLeft() {
+        return deadline == null ? -1 : java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), deadline);
+    }
+    public String getCountdown() {
+        long d = getDaysLeft();
+        if (d < 0) return "Closed";
+        if (d == 0) return "Closes today";
+        if (d == 1) return "Closes tomorrow";
+        return d + " days left";
+    }
+    public boolean isClosingSoon() { long d = getDaysLeft(); return d >= 0 && d <= 5; }
+    public java.util.List<String> getRequiredSkillList() { return SkillMatch.split(requiredSkills); }
     public String getJobTypeLabel() { return "INTERNSHIP".equals(jobType) ? "Internship" : "Full time"; }
+
+    public String getRequiredSkills() { return requiredSkills; }
+    public void setRequiredSkills(String requiredSkills) { this.requiredSkills = requiredSkills; }
+    public SkillMatch getMatch() { return match; }
+    public void setMatch(SkillMatch match) { this.match = match; }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

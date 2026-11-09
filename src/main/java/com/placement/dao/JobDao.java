@@ -49,7 +49,7 @@ public class JobDao {
 
     public void create(Job j) throws SQLException {
         String sql = "INSERT INTO jobs (company_id, title, description, job_type, ctc_lpa, location, min_cgpa, "
-                   + "max_backlogs, eligible_departments, deadline, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                   + "max_backlogs, eligible_departments, required_skills, deadline, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection c = DB.get(); PreparedStatement ps = c.prepareStatement(sql)) {
             int i = bind(ps, j);
             ps.setString(i, j.getStatus());
@@ -59,7 +59,7 @@ public class JobDao {
 
     public void update(Job j) throws SQLException {
         String sql = "UPDATE jobs SET company_id=?, title=?, description=?, job_type=?, ctc_lpa=?, location=?, min_cgpa=?, "
-                   + "max_backlogs=?, eligible_departments=?, deadline=?, status=? WHERE id=?";
+                   + "max_backlogs=?, eligible_departments=?, required_skills=?, deadline=?, status=? WHERE id=?";
         try (Connection c = DB.get(); PreparedStatement ps = c.prepareStatement(sql)) {
             int i = bind(ps, j);
             ps.setString(i++, j.getStatus());
@@ -79,6 +79,7 @@ public class JobDao {
         ps.setBigDecimal(i++, j.getMinCgpa());
         ps.setInt(i++, j.getMaxBacklogs());
         ps.setString(i++, j.getEligibleDepartments());
+        ps.setString(i++, j.getRequiredSkills());
         ps.setDate(i++, Date.valueOf(j.getDeadline()));
         return i;
     }

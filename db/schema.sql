@@ -67,6 +67,7 @@ CREATE TABLE jobs (
     min_cgpa             DECIMAL(4,2) NOT NULL DEFAULT 0,
     max_backlogs         INT NOT NULL DEFAULT 0,
     eligible_departments VARCHAR(200) NOT NULL DEFAULT 'ALL',   -- comma list e.g. 'CSE,IT' or 'ALL'
+    required_skills      VARCHAR(300),                -- comma list, used for the skill match score
     deadline             DATE NOT NULL,
     status               ENUM('OPEN','CLOSED') NOT NULL DEFAULT 'OPEN',
     created_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -180,13 +181,13 @@ INSERT INTO companies (id, user_id, name, industry, website, location, descripti
  (3, 12, 'Kaveri Motors',       'Automotive',      'https://kaverimotors.example',   'Coimbatore', 'Two-wheeler and EV manufacturer.'),
  (4, 13, 'BlueLeaf Systems',    'Embedded / IoT',  'https://blueleaf.example',       'Hyderabad',  'IoT devices and firmware. (pending approval)');
 
-INSERT INTO jobs (id, company_id, title, description, job_type, ctc_lpa, location, min_cgpa, max_backlogs, eligible_departments, deadline, status) VALUES
- (1, 1, 'Software Engineer',        'Backend development in Java and Spring.',         'FULL_TIME',  6.50, 'Chennai',    7.00, 0, 'CSE,IT',          DATE_ADD(CURDATE(), INTERVAL 20 DAY), 'OPEN'),
- (2, 2, 'Data Analyst',             'SQL, Python and dashboarding for clients.',       'FULL_TIME',  8.00, 'Bengaluru',  8.00, 0, 'CSE,IT,ECE',      DATE_ADD(CURDATE(), INTERVAL 12 DAY), 'OPEN'),
- (3, 3, 'Graduate Engineer Trainee','Production and quality engineering.',             'FULL_TIME',  4.80, 'Coimbatore', 6.50, 1, 'MECH,EEE',        DATE_ADD(CURDATE(), INTERVAL 25 DAY), 'OPEN'),
- (4, 1, 'Cloud Intern',             '6-month internship on AWS operations.',          'INTERNSHIP', 2.40, 'Remote',     6.00, 1, 'ALL',             DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'OPEN'),
- (5, 2, 'ML Engineer',              'Build and deploy ML models.',                    'FULL_TIME', 12.00, 'Bengaluru',  8.50, 0, 'CSE,IT',          DATE_SUB(CURDATE(), INTERVAL 10 DAY), 'CLOSED'),
- (6, 3, 'EV Systems Engineer',      'Battery management and motor control.',          'FULL_TIME',  7.20, 'Coimbatore', 7.00, 0, 'EEE,ECE,MECH',    DATE_ADD(CURDATE(), INTERVAL 15 DAY), 'OPEN');
+INSERT INTO jobs (id, company_id, title, description, job_type, ctc_lpa, location, min_cgpa, max_backlogs, eligible_departments, required_skills, deadline, status) VALUES
+ (1, 1, 'Software Engineer',        'Backend development in Java and Spring.',         'FULL_TIME',  6.50, 'Chennai',    7.00, 0, 'CSE,IT',       'Java, Spring Boot, SQL, DSA',         DATE_ADD(CURDATE(), INTERVAL 20 DAY), 'OPEN'),
+ (2, 2, 'Data Analyst',             'SQL, Python and dashboarding for clients.',       'FULL_TIME',  8.00, 'Bengaluru',  8.00, 0, 'CSE,IT,ECE',   'SQL, Python, Power BI, Excel',        DATE_ADD(CURDATE(), INTERVAL 12 DAY), 'OPEN'),
+ (3, 3, 'Graduate Engineer Trainee','Production and quality engineering.',             'FULL_TIME',  4.80, 'Coimbatore', 6.50, 1, 'MECH,EEE',     'AutoCAD, SolidWorks, Quality Control', DATE_ADD(CURDATE(), INTERVAL 25 DAY), 'OPEN'),
+ (4, 1, 'Cloud Intern',             '6-month internship on AWS operations.',          'INTERNSHIP', 2.40, 'Remote',     6.00, 1, 'ALL',          'AWS, Linux, Docker, Python',          DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'OPEN'),
+ (5, 2, 'ML Engineer',              'Build and deploy ML models.',                    'FULL_TIME', 12.00, 'Bengaluru',  8.50, 0, 'CSE,IT',       'Python, Machine Learning, SQL',       DATE_SUB(CURDATE(), INTERVAL 10 DAY), 'CLOSED'),
+ (6, 3, 'EV Systems Engineer',      'Battery management and motor control.',          'FULL_TIME',  7.20, 'Coimbatore', 7.00, 0, 'EEE,ECE,MECH', 'Power Systems, Embedded C, MATLAB, PLC', DATE_ADD(CURDATE(), INTERVAL 15 DAY), 'OPEN');
 
 INSERT INTO applications (id, job_id, student_id, status) VALUES
  (1, 5, 2, 'SELECTED'),     -- Priya   -> ML Engineer (placed)

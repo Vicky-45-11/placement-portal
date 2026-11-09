@@ -70,6 +70,8 @@ public class StudentServlet extends BaseServlet {
         for (Job j : list) {
             j.setApplicationStatus(applied.get(j.getId()));
             j.setIneligibleReason(me.isPlaced() ? "You are already placed" : j.checkEligibility(me));
+            j.setMatch(com.placement.model.SkillMatch.of(j.getRequiredSkills(), me.getSkills(), me.getCgpa(), j.getMinCgpa(),
+                    j.checkEligibility(me) == null));
         }
         return list;
     }

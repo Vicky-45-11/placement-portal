@@ -20,6 +20,7 @@ public class HomeServlet extends BaseServlet {
         }
         req.setAttribute("stats", new ReportDao().summary());
         req.setAttribute("jobs", new JobDao().listOpen());
+        req.setAttribute("offers", new ReportDao().recentOffers(12));
         render(req, res, "common/home");
     }
 }

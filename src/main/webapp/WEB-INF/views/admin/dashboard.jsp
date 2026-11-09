@@ -16,6 +16,9 @@
     <div class="cell"><div class="label">Applications</div><div class="value">${stats.applications}</div></div>
     <div class="cell"><div class="label">Recruiters</div><div class="value">${stats.companies}</div></div>
 </div>
+<div class="card"><h2>Where every application stands</h2>
+    <%@ include file="/WEB-INF/views/common/funnel.jspf" %>
+</div>
 <div class="grid two">
     <div class="card">
         <h2>Department-wise placement</h2>

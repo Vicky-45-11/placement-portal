@@ -19,6 +19,17 @@
     </div>
 </section>
 
+<c:if test="${not empty offers}">
+<div class="offerwall" aria-label="Recent offers">
+    <div class="track">
+        <c:forEach begin="1" end="${fn:length(offers) < 4 ? 4 : 2}" var="rep">
+            <c:forEach items="${offers}" var="o">
+                <span class="o"><i>Offer</i><c:out value="${o[0]}"/> (${o[1]}) → <c:out value="${o[2]}"/><b>${o[3]} LPA</b></span>
+            </c:forEach>
+        </c:forEach>
+    </div>
+</div>
+</c:if>
 <div class="how">
     <div><span class="eyebrow">Step 1</span><b>Build your profile</b><span class="small muted">Add CGPA, backlogs and skills, then upload a PDF resume.</span></div>
     <div><span class="eyebrow">Step 2</span><b>Apply where you qualify</b><span class="small muted">Each drive checks CGPA, backlogs, department and deadline for you.</span></div>
@@ -32,7 +43,7 @@
             <div class="body">
                 <div class="company"><c:out value="${j.companyName}"/></div>
                 <h3><c:out value="${j.title}"/></h3>
-                <div class="facts"><span>${j.jobTypeLabel}</span><span><c:out value="${j.location}"/></span><span>CGPA <b>${j.minCgpa}+</b></span><span>Closes <b>${j.deadlineText}</b></span></div>
+                <div class="facts"><span class="countdown ${j.closingSoon ? 'soon' : ''}">${j.countdown}</span><span>${j.jobTypeLabel}</span><span><c:out value="${j.location}"/></span><span>CGPA <b>${j.minCgpa}+</b></span><span>Closes <b>${j.deadlineText}</b></span></div>
             </div>
             <div class="stub"><div class="pay">${j.ctcLpa}<small>LPA</small></div><a class="btn sm quiet" href="${ctx}/login">Log in to apply</a></div>
         </article>

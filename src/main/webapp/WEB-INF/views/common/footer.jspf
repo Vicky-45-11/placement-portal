@@ -1,4 +1,5 @@
 </main>
 <footer class="colophon"><div class="mast-inner">Placement Cell · Java Servlets, JSP &amp; MySQL</div></footer>
+<script src="${ctx}/assets/app.js" defer></script>
 </body>
 </html>

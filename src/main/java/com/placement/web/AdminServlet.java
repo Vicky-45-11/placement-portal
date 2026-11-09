@@ -29,6 +29,7 @@ public class AdminServlet extends BaseServlet {
             case "" -> {
                 req.setAttribute("stats", reports.summary());
                 req.setAttribute("byDept", reports.byDepartment());
+                req.setAttribute("funnel", reports.statusCounts());
                 req.setAttribute("recent", applications.listAll(null).stream().limit(8).toList());
                 render(req, res, "admin/dashboard");
             }
@@ -103,7 +104,9 @@ public class AdminServlet extends BaseServlet {
                 Job j = jobs.findById(Web.intParam(req, "job", 0));
                 if (j == null) { notFound(res); return; }
                 req.setAttribute("job", j);
-                req.setAttribute("applications", applications.listByJob(j.getId()));
+                java.util.List<Application> apps = applications.listByJob(j.getId());
+                scoreApplicants(j, apps);
+                req.setAttribute("applications", apps);
                 req.setAttribute("statuses", Application.STATUSES);
                 render(req, res, "company/applicants");   // same view, admin can act on any drive
             }
@@ -119,15 +122,17 @@ public class AdminServlet extends BaseServlet {
                 String status = Web.str(req, "status");
                 if (post && a != null && isValidStatus(status)) {
                     applications.updateStatus(a.getId(), status);
+                    if (isAjax(req)) { res.setStatus(HttpServletResponse.SC_NO_CONTENT); return; }
                     Web.flash(req, a.getStudentName() + " moved to " + status + ".");
                 }
+                if (isAjax(req)) { res.sendError(HttpServletResponse.SC_BAD_REQUEST); return; }
                 String back = Web.str(req, "back");
                 redirect(req, res, back.startsWith("/admin/") ? back : "/admin/applications");
             }
             case "interview/schedule" -> {
                 Application a = applications.findById(Web.intParam(req, "applicationId", 0));
                 if (post && a != null) scheduleInterview(interviews, a, req);
-                redirect(req, res, "/admin/applicants?job=" + (a == null ? 0 : a.getJobId()));
+                redirect(req, res, "/admin/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
             }
             case "interview/result" -> {
                 com.placement.model.Interview i = interviews.findById(Web.intParam(req, "id", 0));
@@ -137,10 +142,12 @@ public class AdminServlet extends BaseServlet {
                     interviews.updateResult(i.getId(), result, Web.strOrNull(req, "notes"));
                     Web.flash(req, "Interview result saved.");
                 }
-                redirect(req, res, "/admin/applicants?job=" + (a == null ? 0 : a.getJobId()));
+                redirect(req, res, "/admin/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
             }
             case "interviews" -> {
-                req.setAttribute("interviews", interviews.listAll());
+                java.util.List<com.placement.model.Interview> all = interviews.listAll();
+                req.setAttribute("interviews", all);
+                req.setAttribute("cal", new com.placement.model.CalendarMonth(com.placement.model.CalendarMonth.parse(Web.str(req, "month")), all));
                 render(req, res, "admin/interviews");
             }
             // ---------- reports ----------
@@ -148,6 +155,8 @@ public class AdminServlet extends BaseServlet {
                 req.setAttribute("stats", reports.summary());
                 req.setAttribute("byDept", reports.byDepartment());
                 req.setAttribute("byCompany", reports.byCompany());
+                req.setAttribute("funnel", reports.statusCounts());
+                req.setAttribute("bands", reports.packageBands());
                 render(req, res, "admin/reports");
             }
             case "reports/placements.csv" -> exportCsv(res);

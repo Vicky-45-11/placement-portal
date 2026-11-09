@@ -62,7 +62,9 @@ public class CompanyServlet extends BaseServlet {
                 Job j = ownJob(me, Web.intParam(req, "job", 0));
                 if (j == null) { notFound(res); return; }
                 req.setAttribute("job", j);
-                req.setAttribute("applications", applications.listByJob(j.getId()));
+                java.util.List<Application> apps = applications.listByJob(j.getId());
+                scoreApplicants(j, apps);
+                req.setAttribute("applications", apps);
                 req.setAttribute("statuses", Application.STATUSES);
                 render(req, res, "company/applicants");
             }
@@ -71,14 +73,16 @@ public class CompanyServlet extends BaseServlet {
                 String status = Web.str(req, "status");
                 if (post && a != null && isValidStatus(status)) {
                     applications.updateStatus(a.getId(), status);
+                    if (isAjax(req)) { res.setStatus(HttpServletResponse.SC_NO_CONTENT); return; }
                     Web.flash(req, a.getStudentName() + " moved to " + status + ".");
                 }
-                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()));
+                if (isAjax(req)) { res.sendError(HttpServletResponse.SC_BAD_REQUEST); return; }
+                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
             }
             case "interview/schedule" -> {
                 Application a = ownApplication(me, Web.intParam(req, "applicationId", 0));
                 if (post && a != null) scheduleInterview(interviews, a, req);
-                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()));
+                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
             }
             case "interview/result" -> {
                 Interview i = interviews.findById(Web.intParam(req, "id", 0));
@@ -88,10 +92,12 @@ public class CompanyServlet extends BaseServlet {
                     interviews.updateResult(i.getId(), result, Web.strOrNull(req, "notes"));
                     Web.flash(req, "Interview result saved.");
                 }
-                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()));
+                redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
             }
             case "interviews" -> {
-                req.setAttribute("interviews", interviews.listByCompany(me.getId()));
+                java.util.List<Interview> all = interviews.listByCompany(me.getId());
+                req.setAttribute("interviews", all);
+                req.setAttribute("cal", new com.placement.model.CalendarMonth(com.placement.model.CalendarMonth.parse(Web.str(req, "month")), all));
                 render(req, res, "company/interviews");
             }
             default -> notFound(res);

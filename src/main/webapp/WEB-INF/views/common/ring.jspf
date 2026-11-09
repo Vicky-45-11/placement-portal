@@ -1,0 +1,4 @@
+<div class="ring ${ringSize} ${m.level}" title="Match ${m.percent}%: skills you list vs. skills the drive asks for, plus CGPA headroom">
+    <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="track" cx="18" cy="18" r="15.9" pathLength="100"/><circle class="val" cx="18" cy="18" r="15.9" pathLength="100" stroke-dasharray="${m.percent} 100"/></svg>
+    <b>${m.percent}<small>%</small></b>
+</div>

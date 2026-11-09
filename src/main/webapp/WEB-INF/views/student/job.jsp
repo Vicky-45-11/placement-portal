@@ -18,7 +18,15 @@
         </dl>
     </div>
     <div class="card">
-        <h2>Eligibility</h2>
+        <h2>Your fit</h2>
+        <div class="actions" style="align-items:center;gap:16px;margin-bottom:6px">
+            <div><c:set var="m" value="${job.match}"/><c:set var="ringSize" value=""/><%@ include file="/WEB-INF/views/common/ring.jspf" %><div class="match-cap">match</div></div>
+            <div><span class="countdown ${job.closingSoon ? 'soon' : ''}">${job.countdown}</span>
+                <div class="chips">
+                    <c:forEach items="${job.match.matched}" var="k"><span class="chip have"><c:out value="${k}"/></span></c:forEach>
+                    <c:forEach items="${job.match.missing}" var="k"><span class="chip need"><c:out value="${k}"/></span></c:forEach>
+                </div></div>
+        </div>
         <dl class="kv">
             <dt>Minimum CGPA</dt><dd>${job.minCgpa} <span class="muted small">(yours: ${me.cgpa})</span></dd>
             <dt>Backlogs allowed</dt><dd>${job.maxBacklogs} <span class="muted small">(yours: ${me.backlogs})</span></dd>

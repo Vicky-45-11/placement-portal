@@ -10,6 +10,42 @@
     <div class="cell"><div class="label">Average package</div><div class="value">${stats.averageCtc}</div><div class="sub">LPA</div></div>
     <div class="cell"><div class="label">Upcoming interviews</div><div class="value">${stats.upcomingInterviews}</div></div>
 </div>
+<div class="chart-grid">
+    <div class="card"><h2>Placement rate</h2>
+        <div class="donut">
+            <div class="donut-wrap">
+                <svg viewBox="0 0 42 42" aria-hidden="true"><circle class="track" cx="21" cy="21" r="15.9" pathLength="100"/><circle class="val" cx="21" cy="21" r="15.9" pathLength="100" style="--pct:${stats.placedPercent}"/></svg>
+                <div class="center"><b>${stats.placedPercent}%</b><span>placed</span></div>
+            </div>
+            <div class="small"><p><strong>${stats.placed}</strong> of ${stats.students} students have an offer.</p>
+                <p class="muted">${stats.students - stats.placed} students are still looking.</p></div>
+        </div>
+    </div>
+    <div class="card"><h2>Placed by department</h2>
+        <div class="hbars">
+            <c:forEach items="${byDept}" var="r" varStatus="st">
+                <div class="hbar"><span class="lbl">${r.label}</span>
+                    <div class="trk"><i></i><span style="--w:${r.percent}%;--d:${st.index * 0.08}s"></span></div>
+                    <span class="num">${r.placed}/${r.total}</span></div>
+            </c:forEach>
+        </div>
+    </div>
+</div>
+<div class="chart-grid">
+    <div class="card"><h2>Application funnel</h2>
+        <%@ include file="/WEB-INF/views/common/funnel.jspf" %>
+    </div>
+    <div class="card"><h2>Offers by package (LPA)</h2>
+        <c:set var="bmax" value="1"/>
+        <c:forEach items="${bands}" var="b"><c:if test="${b.value > bmax}"><c:set var="bmax" value="${b.value}"/></c:if></c:forEach>
+        <div class="columns">
+            <c:forEach items="${bands}" var="b" varStatus="st">
+                <div class="c"><b>${b.value}</b><span style="--h:${b.value * 100 / bmax}%;--d:${st.index * 0.08}s"></span></div>
+            </c:forEach>
+        </div>
+        <div class="columns-lbl"><c:forEach items="${bands}" var="b"><span>${b.key}</span></c:forEach></div>
+    </div>
+</div>
 <div class="card table-wrap"><h2>By department</h2>
 <table><thead><tr><th>Department</th><th class="num">Students</th><th class="num">Placed</th><th>Rate</th><th class="num">Avg LPA</th><th class="num">Highest LPA</th></tr></thead><tbody>
 <c:forEach items="${byDept}" var="r">

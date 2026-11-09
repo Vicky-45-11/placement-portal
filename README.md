@@ -17,6 +17,15 @@ The UI is built to feel like a college notice board and placement register, not 
 | **Student** | Register, edit profile (CGPA, backlogs, skills), upload a PDF resume, browse drives with automatic eligibility checks, apply, withdraw, track status and interview rounds, read announcements |
 | **Company (recruiter)** | Register (needs admin approval), edit company profile, post drives with eligibility rules, review applicants and their resumes, shortlist/reject/select, schedule interview rounds and record results |
 
+**Interactive pieces**
+- **Skill match ring** on every drive: the recruiter's required skills that are on the student's profile (70%) plus CGPA headroom over the cut-off (30%). Matched skills show as ticked chips, missing ones as `+ skill`.
+- **Drag-and-drop hiring board** for recruiters and the admin: five stage columns, drag a card (or use its menu) and the move is saved over `fetch` with the CSRF token. Moving to SELECTED records the placement and throws a little confetti.
+- **Live search and sort** on the drives list (best match, highest package, closing soonest) and a countdown tag that pulses when a drive closes in 5 days or less.
+- **Charts in plain SVG/CSS** on reports: placement donut, department bars, application funnel, offers by package band.
+- **Interview calendar**: month view with every round, for recruiters and the admin.
+- **Offer wall** marquee of recent offers on the home page, and a **Ctrl/Cmd + K** jump palette on every signed-in page.
+- Every page still works with JavaScript off; the scripts only add on top.
+
 **Rules the app enforces**
 - A student can apply only if the drive is open, the deadline has not passed, and their CGPA, backlogs and department meet the drive's rules.
 - A resume must be uploaded before applying. One application per student per drive.
@@ -141,5 +150,5 @@ See **[DEPLOY.md](DEPLOY.md)**. The included `Dockerfile` runs on Railway or Ren
 | | |
 |---|---|
 | ![Student drives](docs/screenshots/student-jobs.png) | ![Admin dashboard](docs/screenshots/admin-dashboard.png) |
-| ![Company applicants](docs/screenshots/company-applicants.png) | ![Student tracker](docs/screenshots/student-tracker.png) |
-| ![Reports](docs/screenshots/admin-reports.png) | |
+| ![Hiring board](docs/screenshots/company-board.png) | ![Student tracker](docs/screenshots/student-tracker.png) |
+| ![Reports](docs/screenshots/admin-reports.png) | ![Interview calendar](docs/screenshots/interview-calendar.png) |

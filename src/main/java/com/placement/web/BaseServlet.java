@@ -77,6 +77,7 @@ public abstract class BaseServlet extends HttpServlet {
         j.setEligibleDepartments(depts == null || depts.length == 0 || depts.length == DEPARTMENTS.size()
                 ? "ALL" : String.join(",", depts));
         j.setDeadline(Web.date(req, "deadline"));
+        j.setRequiredSkills(Web.strOrNull(req, "requiredSkills"));
         j.setStatus("CLOSED".equals(Web.str(req, "status")) ? "CLOSED" : "OPEN");
 
         if (j.getTitle().isEmpty()) return "Job title is required.";
@@ -85,6 +86,20 @@ public abstract class BaseServlet extends HttpServlet {
         if (j.getDeadline() == null) return "Choose a deadline.";
         if (j.getId() == 0 && j.getDeadline().isBefore(LocalDate.now())) return "Deadline cannot be in the past.";
         return null;
+    }
+
+    /** True for status updates sent by the drag-and-drop board (fetch) instead of a normal form post. */
+    protected static boolean isAjax(HttpServletRequest req) {
+        return "fetch".equals(req.getHeader("X-Requested-With"));
+    }
+
+    /** Scores every applicant of a drive against its required skills. */
+    protected static void scoreApplicants(Job job, java.util.List<com.placement.model.Application> apps) {
+        for (com.placement.model.Application a : apps) {
+            boolean eligible = a.getCgpa() != null && a.getCgpa().compareTo(job.getMinCgpa()) >= 0
+                    && a.getBacklogs() <= job.getMaxBacklogs() && job.isDepartmentEligible(a.getDepartment());
+            a.setMatch(com.placement.model.SkillMatch.of(job.getRequiredSkills(), a.getSkills(), a.getCgpa(), job.getMinCgpa(), eligible));
+        }
     }
 
     protected static boolean isValidStatus(String s) {

@@ -89,4 +89,42 @@ public class ReportDao {
             return out;
         }
     }
+
+    /** Applications per pipeline stage, in pipeline order. */
+    public Map<String, Integer> statusCounts() throws SQLException {
+        Map<String, Integer> m = new LinkedHashMap<>();
+        for (String st : com.placement.model.Application.STATUSES) m.put(st, 0);
+        try (Connection c = DB.get(); Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery("SELECT status, COUNT(*) FROM applications GROUP BY status")) {
+            while (rs.next()) m.put(rs.getString(1), rs.getInt(2));
+        }
+        return m;
+    }
+
+    /** Number of offers in each package band (LPA). */
+    public Map<String, Integer> packageBands() throws SQLException {
+        Map<String, Integer> m = new LinkedHashMap<>();
+        m.put("< 4", 0); m.put("4 - 6", 0); m.put("6 - 8", 0); m.put("8 - 10", 0); m.put("10 +", 0);
+        String sql = "SELECT CASE WHEN ctc_lpa < 4 THEN '< 4' WHEN ctc_lpa < 6 THEN '4 - 6' WHEN ctc_lpa < 8 THEN '6 - 8' "
+                   + "WHEN ctc_lpa < 10 THEN '8 - 10' ELSE '10 +' END AS band, COUNT(*) FROM placements GROUP BY band";
+        try (Connection c = DB.get(); Statement st = c.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) m.put(rs.getString(1), rs.getInt(2));
+        }
+        return m;
+    }
+
+    /** Latest offers for the public "offer wall": first name, department, company, package. */
+    public List<String[]> recentOffers(int limit) throws SQLException {
+        String sql = "SELECT SUBSTRING_INDEX(u.name, ' ', 1), s.department, co.name, p.ctc_lpa FROM placements p "
+                   + "JOIN students s ON s.id = p.student_id JOIN users u ON u.id = s.user_id "
+                   + "JOIN companies co ON co.id = p.company_id ORDER BY p.offer_date DESC, p.id DESC LIMIT ?";
+        try (Connection c = DB.get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, limit);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String[]> out = new ArrayList<>();
+                while (rs.next()) out.add(new String[]{rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)});
+                return out;
+            }
+        }
+    }
 }

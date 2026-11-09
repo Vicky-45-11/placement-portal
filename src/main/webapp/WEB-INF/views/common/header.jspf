@@ -22,6 +22,7 @@
         <c:choose>
             <c:when test="${not empty role}">
                 <div class="who">
+                    <button type="button" class="palette-btn" hidden title="Quick jump (Ctrl+K)"><span class="lbl">Jump to</span><span class="kbd">Ctrl K</span></button>
                     <span class="who-name"><c:out value="${sessionScope.userName}"/></span>
                     <span class="who-role"><c:out value="${role == 'COMPANY' ? sessionScope.companyName : (role == 'ADMIN' ? 'Placement officer' : 'Student')}"/></span>
                     <form method="post" action="${ctx}/logout" class="inline"><input type="hidden" name="_csrf" value="${sessionScope.csrf}"><button class="text-btn">Log out</button></form>

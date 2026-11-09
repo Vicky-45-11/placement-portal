@@ -1,0 +1,27 @@
+<div class="card">
+    <div class="cal-head">
+        <h2>${cal.title} <span class="small muted" style="font-family:var(--sans);font-weight:400">· ${cal.count} round(s)</span></h2>
+        <div class="actions">
+            <a class="btn sm quiet" href="${ctx}/${area}/interviews?month=${cal.prev}" aria-label="Previous month">&larr;</a>
+            <a class="btn sm quiet" href="${ctx}/${area}/interviews">Today</a>
+            <a class="btn sm quiet" href="${ctx}/${area}/interviews?month=${cal.next}" aria-label="Next month">&rarr;</a>
+        </div>
+    </div>
+    <div class="table-wrap">
+    <div class="cal" role="grid">
+        <c:forEach items="Mon,Tue,Wed,Thu,Fri,Sat,Sun" var="d"><div class="dow">${d}</div></c:forEach>
+        <c:forEach items="${cal.weeks}" var="w">
+            <c:forEach items="${w}" var="day">
+                <div class="day ${day.inMonth ? '' : 'out'} ${day.today ? 'today' : ''} ${day.weekend ? 'wknd' : ''}">
+                    <span class="dn">${day.number}</span>
+                    <c:forEach items="${day.interviews}" var="i">
+                        <div class="ev ${i.result}" title="<c:out value='${i.studentName} · ${i.roundName} · ${i.companyName} · ${i.scheduledAtText}'/>">
+                            <b><c:out value="${i.studentName}"/></b><span><c:out value="${i.roundName}"/> · ${fn:substring(i.scheduledAtText, 13, 21)}</span>
+                        </div>
+                    </c:forEach>
+                </div>
+            </c:forEach>
+        </c:forEach>
+    </div>
+    </div>
+</div>

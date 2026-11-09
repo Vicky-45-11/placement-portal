@@ -1,0 +1,9 @@
+<c:set var="fmax" value="1"/>
+<c:forEach items="${funnel}" var="f"><c:if test="${f.value > fmax}"><c:set var="fmax" value="${f.value}"/></c:if></c:forEach>
+<div class="funnel">
+    <c:forEach items="${funnel}" var="f" varStatus="st">
+        <div class="step s-${f.key}"><span class="lbl">${f.key}</span>
+            <div><div class="shape" style="--w:${f.value * 100 / fmax}%;--d:${st.index * 0.08}s"></div></div>
+            <span class="n">${f.value}</span></div>
+    </c:forEach>
+</div>
