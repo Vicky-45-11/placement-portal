@@ -3,19 +3,18 @@
 <c:set var="nav" value="dashboard" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 <div class="page-head">
-    <div><h1>Placement dashboard</h1><p class="muted">Live numbers from the database.</p></div>
-    <div class="actions"><a class="btn ghost" href="${ctx}/admin/reports/placements.csv">Export placements (CSV)</a><a class="btn" href="${ctx}/admin/job/new">New drive</a></div>
+    <div><span class="eyebrow">Placement officer</span><h1>Season overview</h1><p>Live from the database. Placed means at least one SELECTED offer.</p></div>
+    <div class="actions"><a class="btn ghost" href="${ctx}/admin/reports/placements.csv">Export placements (CSV)</a><a class="btn accent" href="${ctx}/admin/job/new">New drive</a></div>
 </div>
 <c:if test="${stats.pendingCompanies > 0}">
-    <div class="alert bad">${stats.pendingCompanies} recruiter account(s) waiting for approval. <a href="${ctx}/admin/companies">Review</a></div>
+    <div class="alert info">${stats.pendingCompanies} recruiter account(s) waiting for approval. <a href="${ctx}/admin/companies">Review</a></div>
 </c:if>
-<div class="grid stats">
-    <div class="stat"><div class="label">Students</div><div class="value">${stats.students}</div></div>
-    <div class="stat"><div class="label">Placed</div><div class="value">${stats.placed}</div><div class="sub">${stats.placedPercent}% of students</div></div>
-    <div class="stat"><div class="label">Companies</div><div class="value">${stats.companies}</div></div>
-    <div class="stat"><div class="label">Open drives</div><div class="value">${stats.openJobs}</div></div>
-    <div class="stat"><div class="label">Applications</div><div class="value">${stats.applications}</div></div>
-    <div class="stat"><div class="label">Highest / average</div><div class="value">${stats.highestCtc}</div><div class="sub">avg ${stats.averageCtc} LPA</div></div>
+<div class="ledger">
+    <div class="cell feature"><div class="label">Placement rate</div><div class="value">${stats.placedPercent}<span class="unit">%</span></div><div class="sub">${stats.placed} of ${stats.students} students placed</div></div>
+    <div class="cell"><div class="label">Best offer</div><div class="value">${stats.highestCtc}<span class="unit">LPA</span></div><div class="sub">average ${stats.averageCtc}</div></div>
+    <div class="cell"><div class="label">Open drives</div><div class="value">${stats.openJobs}</div></div>
+    <div class="cell"><div class="label">Applications</div><div class="value">${stats.applications}</div></div>
+    <div class="cell"><div class="label">Recruiters</div><div class="value">${stats.companies}</div></div>
 </div>
 <div class="grid two">
     <div class="card">

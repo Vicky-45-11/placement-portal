@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="My drives" scope="request"/>
 <c:set var="nav" value="jobs" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>My drives</h1></div><a class="btn" href="${ctx}/company/job/new">Post a drive</a></div>
+<div class="page-head"><div><span class="eyebrow">Your company</span><h1>My drives</h1><p>Open Applicants to shortlist students, schedule rounds and make offers.</p></div><a class="btn accent" href="${ctx}/company/job/new">Post a drive</a></div>
 <div class="card table-wrap">
 <table>
     <thead><tr><th>Role</th><th>Type</th><th class="num">LPA</th><th>Eligibility</th><th>Deadline</th><th class="num">Applicants</th><th>Status</th><th></th></tr></thead>

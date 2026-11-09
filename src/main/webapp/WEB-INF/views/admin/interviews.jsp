@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Interviews" scope="request"/>
 <c:set var="nav" value="interviews" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Interview schedule</h1><p class="muted">All rounds across every drive.</p></div></div>
+<div class="page-head"><div><span class="eyebrow">Schedule</span><h1>Interviews</h1><p>Every round across every drive, latest first.</p></div></div>
 <div class="card table-wrap">
 <table>
     <thead><tr><th>When</th><th>Student</th><th>Company / drive</th><th>Round</th><th>Mode / venue</th><th>Result</th></tr></thead>

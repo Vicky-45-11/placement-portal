@@ -30,6 +30,11 @@ public class Application {
     private String resumeFile;
     private List<Interview> interviews = new ArrayList<>();
 
+    /** Position in the pipeline: 0 applied, 1 shortlisted, 2 interview, 3 selected, -1 rejected. */
+    public int getStageIndex() {
+        return "REJECTED".equals(status) ? -1 : Math.max(0, STATUSES.indexOf(status));
+    }
+
     public String getAppliedAtText() { return Fmt.dateTime(appliedAt); }
     public String getUpdatedAtText() { return Fmt.dateTime(updatedAt); }
     public boolean isHasResume() { return resumeFile != null && !resumeFile.isBlank(); }

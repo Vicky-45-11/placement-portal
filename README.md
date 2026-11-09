@@ -4,7 +4,10 @@ A web app for a college placement cell. Students apply to campus drives, recruit
 
 **Stack:** Java 17+ · Jakarta Servlets 6 + JSP/JSTL (frontend) · JDBC · MySQL 8 · Maven. No framework, so every SQL query and connection is visible in the code.
 
-![Admin dashboard](docs/screenshots/admin-dashboard.png)
+![Home page](docs/screenshots/home.png)
+
+### Design
+The UI is built to feel like a college notice board and placement register, not a generic admin template: warm paper background, ink-black type, one vermilion accent, serif numerals (Fraunces) with IBM Plex Sans and Mono. Drives are shown as tickets with the package on a tear-off stub. Statuses look like rubber stamps. Every application has a progress track (Applied, Shortlisted, Interview, Offer), so students and recruiters can see where it stands at a glance.
 
 ## Features
 
@@ -133,5 +136,6 @@ Sample students have no resume file yet, so upload any PDF from **Profile & resu
 
 | | |
 |---|---|
-| ![Home](docs/screenshots/home.png) | ![Student drives](docs/screenshots/student-jobs.png) |
-| ![Company applicants](docs/screenshots/company-applicants.png) | ![Reports](docs/screenshots/admin-reports.png) |
+| ![Student drives](docs/screenshots/student-jobs.png) | ![Admin dashboard](docs/screenshots/admin-dashboard.png) |
+| ![Company applicants](docs/screenshots/company-applicants.png) | ![Student tracker](docs/screenshots/student-tracker.png) |
+| ![Reports](docs/screenshots/admin-reports.png) | |

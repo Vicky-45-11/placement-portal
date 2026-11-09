@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Companies" scope="request"/>
 <c:set var="nav" value="companies" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Companies</h1><p class="muted">Approve new recruiters before they can post drives.</p></div></div>
+<div class="page-head"><div><span class="eyebrow">Recruiters</span><h1>Companies</h1><p>New recruiter accounts stay pending until you approve them. Disabled accounts cannot log in.</p></div></div>
 <div class="card table-wrap">
 <table>
     <thead><tr><th>Company</th><th>Industry</th><th>Contact</th><th class="num">Drives</th><th class="num">Hired</th><th>Account</th><th></th></tr></thead>

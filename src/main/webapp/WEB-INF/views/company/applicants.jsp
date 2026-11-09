@@ -4,7 +4,7 @@
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 <c:set var="back" value="/${area}/applicants?job=${job.id}"/>
 <div class="page-head">
-    <div><h1>Applicants · <c:out value="${job.title}"/></h1>
+    <div><span class="eyebrow">Applicants</span><h1><c:out value="${job.title}"/></h1>
         <p class="muted"><c:out value="${job.companyName}"/> · ${job.ctcLpa} LPA · ${fn:length(applications)} applicant(s) · <span class="badge st-${job.status}">${job.status}</span></p></div>
     <a class="btn ghost" href="${ctx}/${area}/jobs">Back to drives</a>
 </div>
@@ -26,11 +26,13 @@
             <button class="btn sm">Update</button>
         </form>
     </div>
+    <c:set var="pa" value="${a}"/>
+    <%@ include file="/WEB-INF/views/common/pipeline.jspf" %>
     <c:if test="${not empty a.interviews}">
         <ul class="timeline">
         <c:forEach items="${a.interviews}" var="i">
             <li>
-                <strong><c:out value="${i.roundName}"/></strong> · ${i.scheduledAtText} · ${i.mode} · <c:out value="${i.venue}"/>
+                <span class="when">${i.scheduledAtText}</span><strong><c:out value="${i.roundName}"/></strong><span class="small">${i.mode} · <c:out value="${i.venue}"/></span>
                 <form method="post" action="${ctx}/${area}/interview/result" class="inline">
                     <input type="hidden" name="_csrf" value="${csrf}"><input type="hidden" name="id" value="${i.id}">
                     <select name="result" style="width:auto;padding:3px 6px">

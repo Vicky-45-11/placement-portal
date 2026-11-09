@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Students" scope="request"/>
 <c:set var="nav" value="students" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Students</h1><p class="muted">${fn:length(students)} shown</p></div></div>
+<div class="page-head"><div><span class="eyebrow">${fn:length(students)} shown</span><h1>Students</h1><p>Search by name or roll number, or filter by department and placement.</p></div></div>
 <form class="filters" method="get" action="${ctx}/admin/students">
     <input type="search" name="q" value="<c:out value='${param.q}'/>" placeholder="Name or roll no">
     <select name="dept"><option value="">All departments</option>

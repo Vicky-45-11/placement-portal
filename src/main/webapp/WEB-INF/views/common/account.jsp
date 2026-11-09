@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Change password" scope="request"/>
 <c:set var="nav" value="account" scope="request"/>
 <%@ include file="header.jspf" %>
-<div class="page-head"><div><h1>Change password</h1></div></div>
+<div class="page-head"><div><span class="eyebrow">Account</span><h1>Change password</h1><p>At least 6 characters.</p></div></div>
 <div class="card" style="max-width:460px">
     <form method="post" action="${ctx}/account" class="stack">
         <input type="hidden" name="_csrf" value="${csrf}">

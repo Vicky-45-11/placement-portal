@@ -1,0 +1,7 @@
+<c:set var="idx" value="${pa.stageIndex}"/>
+<ol class="pipeline" aria-label="Application progress">
+    <li class="${idx == 0 ? 'now' : 'done'}">Applied</li>
+    <li class="${idx > 1 ? 'done' : (idx == 1 ? 'now' : '')}">Shortlisted</li>
+    <li class="${idx > 2 ? 'done' : (idx == 2 ? 'now' : '')}">Interview</li>
+    <li class="${idx == 3 ? 'won' : (idx == -1 ? 'lost' : '')}">${idx == -1 ? 'Not selected' : 'Offer'}</li>
+</ol>

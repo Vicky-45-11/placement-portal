@@ -3,7 +3,7 @@
 <c:set var="nav" value="jobs" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 <div class="page-head">
-    <div><h1><c:out value="${job.title}"/></h1><p class="muted"><c:out value="${job.companyName}"/> · <c:out value="${job.location}"/></p></div>
+    <div><span class="eyebrow"><c:out value="${job.companyName}"/></span><h1><c:out value="${job.title}"/></h1><p><c:out value="${job.location}"/> · ${job.ctcLpa} LPA · closes ${job.deadlineText}</p></div>
     <a class="btn ghost" href="${ctx}/student/jobs">Back to drives</a>
 </div>
 <div class="grid two">
@@ -34,8 +34,8 @@
             <c:otherwise>
                 <form method="post" action="${ctx}/student/apply">
                     <input type="hidden" name="_csrf" value="${csrf}"><input type="hidden" name="jobId" value="${job.id}">
-                    <button class="btn">Apply now</button>
-                    <c:if test="${not me.hasResume}"><p class="small pill-note">Upload your resume first.</p></c:if>
+                    <button class="btn accent">Apply now</button>
+                    <c:if test="${not me.hasResume}"><p class="eligibility no">Upload your resume first.</p></c:if>
                 </form>
             </c:otherwise>
         </c:choose>

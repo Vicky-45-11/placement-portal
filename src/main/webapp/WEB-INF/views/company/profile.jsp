@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Company profile" scope="request"/>
 <c:set var="nav" value="profile" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Company profile</h1><p class="muted">Students see this on your drives.</p></div></div>
+<div class="page-head"><div><span class="eyebrow">Your company</span><h1>Company profile</h1><p>Students see this on your drives.</p></div></div>
 <div class="card" style="max-width:720px">
     <form method="post" action="${ctx}/company/profile" class="stack">
         <input type="hidden" name="_csrf" value="${csrf}">

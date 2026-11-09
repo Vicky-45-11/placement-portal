@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="${job.id == 0 ? 'Post a drive' : 'Edit drive'}" scope="request"/>
 <c:set var="nav" value="${job.id == 0 ? 'newjob' : 'jobs'}" scope="request"/>
 <%@ include file="header.jspf" %>
-<div class="page-head"><div><h1>${job.id == 0 ? 'Post a placement drive' : 'Edit drive'}</h1>
+<div class="page-head"><div><span class="eyebrow">${job.id == 0 ? 'New drive' : 'Edit drive'}</span><h1>${job.id == 0 ? 'Post a placement drive' : job.title}</h1>
     <p class="muted">Eligibility rules are checked automatically when students apply.</p></div></div>
 <div class="card">
     <form method="post" action="${ctx}/${area}/job/save" class="stack">

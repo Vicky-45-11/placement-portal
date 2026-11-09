@@ -2,13 +2,13 @@
 <c:set var="pageTitle" value="Register" scope="request"/>
 <%@ include file="header.jspf" %>
 <c:set var="t" value="${not empty type ? type : param.type}"/>
-<div class="card auth-card wide">
-    <h1>Create an account</h1>
+<div class="auth wide">
+    <span class="eyebrow">New account</span><h1>Create an account</h1>
     <div class="tabs" style="margin-top:12px">
         <a href="${ctx}/register" class="${t != 'company' ? 'on' : ''}">I am a student</a>
         <a href="${ctx}/register?type=company" class="${t == 'company' ? 'on' : ''}">I am a recruiter</a>
     </div>
-    <form method="post" action="${ctx}/register" class="stack">
+    <form method="post" action="${ctx}/register" class="stack card">
         <input type="hidden" name="_csrf" value="${csrf}">
         <input type="hidden" name="type" value="${t == 'company' ? 'company' : 'student'}">
         <div class="row">
@@ -52,7 +52,7 @@
             <input type="text" name="skills" value="<c:out value='${param.skills}'/>" placeholder="Java, SQL, React">
         </c:otherwise>
         </c:choose>
-        <div style="margin-top:18px"><button class="btn" type="submit">Create account</button></div>
+        <div style="margin-top:18px"><button class="btn accent" type="submit">Create account</button></div>
     </form>
 </div>
 <%@ include file="footer.jspf" %>

@@ -1,11 +1,4 @@
-<c:choose>
-<c:when test="${not empty role}">
-    </main>
-</div>
-</c:when>
-<c:otherwise>
 </main>
-</c:otherwise>
-</c:choose>
+<footer class="colophon"><div class="mast-inner">Placement Cell · Java Servlets, JSP &amp; MySQL</div></footer>
 </body>
 </html>

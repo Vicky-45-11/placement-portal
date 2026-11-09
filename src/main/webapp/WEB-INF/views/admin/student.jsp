@@ -3,7 +3,7 @@
 <c:set var="nav" value="students" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 <div class="page-head">
-    <div><h1><c:out value="${student.name}"/></h1><p class="muted"><c:out value="${student.rollNo}"/> · ${student.department} · Batch ${student.batchYear}</p></div>
+    <div><span class="eyebrow">Student record</span><h1><c:out value="${student.name}"/></h1><p class="muted"><c:out value="${student.rollNo}"/> · ${student.department} · Batch ${student.batchYear}</p></div>
     <div class="actions">
         <a class="btn ghost" href="${ctx}/admin/students">Back</a>
         <form method="post" action="${ctx}/admin/student/delete" class="inline" onsubmit="return confirm('Delete this student and all their applications?')">

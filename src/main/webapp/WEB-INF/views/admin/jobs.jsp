@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Drives" scope="request"/>
 <c:set var="nav" value="jobs" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Placement drives</h1></div><a class="btn" href="${ctx}/admin/job/new">New drive</a></div>
+<div class="page-head"><div><span class="eyebrow">All companies</span><h1>Drives</h1><p>Close a drive to stop new applications. Deleting a drive also deletes its applications.</p></div><a class="btn accent" href="${ctx}/admin/job/new">New drive</a></div>
 <div class="card table-wrap">
 <table>
     <thead><tr><th>Role</th><th>Company</th><th class="num">LPA</th><th>Eligibility</th><th>Deadline</th><th class="num">Applicants</th><th>Status</th><th></th></tr></thead>

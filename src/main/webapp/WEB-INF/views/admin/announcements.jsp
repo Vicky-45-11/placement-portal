@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Announcements" scope="request"/>
 <c:set var="nav" value="announcements" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Announcements</h1><p class="muted">Shown on every student's dashboard.</p></div></div>
+<div class="page-head"><div><span class="eyebrow">Notice board</span><h1>Notices</h1><p>Pinned on every student's desk, newest first.</p></div></div>
 <div class="grid two">
     <div class="card"><h2>Post a notice</h2>
         <form method="post" action="${ctx}/admin/announcements" class="stack">

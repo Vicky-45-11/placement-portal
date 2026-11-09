@@ -3,14 +3,14 @@
 <c:set var="nav" value="dashboard" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 <div class="page-head">
-    <div><h1><c:out value="${me.name}"/></h1><p class="muted"><c:out value="${me.industry}"/> · <c:out value="${me.location}"/></p></div>
-    <a class="btn" href="${ctx}/company/job/new">Post a drive</a>
+    <div><span class="eyebrow">Recruiter overview</span><h1><c:out value="${me.name}"/></h1><p class="muted"><c:out value="${me.industry}"/> · <c:out value="${me.location}"/></p></div>
+    <a class="btn accent" href="${ctx}/company/job/new">Post a drive</a>
 </div>
-<div class="grid stats">
-    <div class="stat"><div class="label">Drives posted</div><div class="value">${me.jobCount}</div></div>
-    <div class="stat"><div class="label">Applicants</div><div class="value">${applicantTotal}</div></div>
-    <div class="stat"><div class="label">Upcoming interviews</div><div class="value">${fn:length(interviews)}</div></div>
-    <div class="stat"><div class="label">Students hired</div><div class="value">${me.hiredCount}</div></div>
+<div class="ledger">
+    <div class="cell"><div class="label">Drives posted</div><div class="value">${me.jobCount}</div></div>
+    <div class="cell"><div class="label">Applicants</div><div class="value">${applicantTotal}</div></div>
+    <div class="cell"><div class="label">Upcoming interviews</div><div class="value">${fn:length(interviews)}</div></div>
+    <div class="cell"><div class="label">Students hired</div><div class="value">${me.hiredCount}</div></div>
 </div>
 <div class="grid two">
     <div class="card">

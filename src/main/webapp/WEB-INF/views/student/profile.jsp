@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Profile" scope="request"/>
 <c:set var="nav" value="profile" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Profile &amp; resume</h1><p class="muted">Companies see this when you apply.</p></div></div>
+<div class="page-head"><div><span class="eyebrow">About you</span><h1>Profile &amp; resume</h1><p>Recruiters see these details and your resume when you apply. Keep your CGPA and backlogs accurate, because eligibility is checked against them.</p></div></div>
 <div class="grid two">
     <div class="card">
         <h2>Details</h2>

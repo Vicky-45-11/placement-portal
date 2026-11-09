@@ -2,7 +2,7 @@
 <c:set var="pageTitle" value="Applications" scope="request"/>
 <c:set var="nav" value="applications" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
-<div class="page-head"><div><h1>Applications</h1><p class="muted">${fn:length(applications)} shown</p></div></div>
+<div class="page-head"><div><span class="eyebrow">${fn:length(applications)} shown</span><h1>Applications</h1><p>Change a status here and the student sees it right away. Choosing SELECTED records the placement.</p></div></div>
 <div class="tabs">
     <a href="${ctx}/admin/applications" class="${empty param.status ? 'on' : ''}">All</a>
     <c:forEach items="${statuses}" var="s"><a href="${ctx}/admin/applications?status=${s}" class="${param.status == s ? 'on' : ''}">${s}</a></c:forEach>
