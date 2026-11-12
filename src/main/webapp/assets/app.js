@@ -151,31 +151,67 @@
   if (links.length > 1 && typeof HTMLDialogElement === "function") {
     const dlg = document.createElement("dialog");
     dlg.className = "palette";
-    dlg.innerHTML = '<input type="search" placeholder="Jump to a page..." aria-label="Jump to a page"><ul role="listbox"></ul>'
-                  + '<div class="hint">Up / Down to move, Enter to open, Esc to close</div>';
+    dlg.innerHTML = '<input type="search" placeholder="Search pages, people, drives..." aria-label="Search pages and records"><ul role="listbox"></ul>'
+                  + '<div class="hint">Up / Down to move · Enter to open · Esc to close · press / or Ctrl K anywhere</div>';
     document.body.appendChild(dlg);
     const input = $("input", dlg), ul = $("ul", dlg);
-    let idx = 0, current = [];
+    const searchUrl = (document.body.dataset.ctx || "") + "/search?q=";
+    let idx = 0, current = [], remote = [], seq = 0, timer;
     const render = () => {
       const t = input.value.trim().toLowerCase();
-      current = links.filter(l => l.label.toLowerCase().includes(t));
+      const pages = links.filter(l => l.label.toLowerCase().includes(t)).map(l => ({ group: "Pages", label: l.label, href: l.href }));
+      current = pages.concat(remote);
       idx = Math.min(idx, Math.max(0, current.length - 1));
       ul.textContent = "";
+      let last = null;
       current.forEach((l, i) => {
+        if (l.group !== last) {
+          const h = document.createElement("li");
+          h.className = "grp";
+          h.setAttribute("role", "presentation");
+          h.textContent = l.group;
+          ul.appendChild(h);
+          last = l.group;
+        }
         const li = document.createElement("li");
         if (i === idx) li.className = "on";
         const a = document.createElement("a");
         a.href = l.href;
-        a.textContent = l.label;
+        const lab = document.createElement("b");
+        lab.textContent = l.label;
+        a.appendChild(lab);
+        if (l.sub) { const sub = document.createElement("small"); sub.textContent = l.sub; a.appendChild(sub); }
         const s = document.createElement("span");
         s.textContent = "go";
         a.appendChild(s);
         li.appendChild(a);
         ul.appendChild(li);
       });
+      if (!current.length) {
+        const li = document.createElement("li");
+        li.className = "none";
+        li.textContent = t.length < 2 ? "Type at least 2 letters to search records" : "No matches for \u201c" + input.value.trim() + "\u201d";
+        ul.appendChild(li);
+      }
+      const on = $("li.on", ul);
+      if (on) on.scrollIntoView({ block: "nearest" });
     };
-    const open = () => { input.value = ""; idx = 0; render(); dlg.showModal(); input.focus(); };
-    input.addEventListener("input", () => { idx = 0; render(); });
+    const searchRemote = () => {
+      const t = input.value.trim();
+      clearTimeout(timer);
+      if (t.length < 2) { remote = []; render(); return; }
+      const my = ++seq;
+      timer = setTimeout(async () => {
+        try {
+          const r = await fetch(searchUrl + encodeURIComponent(t), { credentials: "same-origin", headers: { "X-Requested-With": "fetch" } });
+          if (!r.ok || my !== seq) return;
+          remote = await r.json();
+          render();
+        } catch (e) { /* offline: pages still work */ }
+      }, 160);
+    };
+    const open = () => { input.value = ""; idx = 0; remote = []; render(); dlg.showModal(); input.focus(); };
+    input.addEventListener("input", () => { idx = 0; render(); searchRemote(); });
     input.addEventListener("keydown", e => {
       if (e.key === "ArrowDown") { idx = Math.min(idx + 1, current.length - 1); render(); e.preventDefault(); }
       if (e.key === "ArrowUp") { idx = Math.max(idx - 1, 0); render(); e.preventDefault(); }
@@ -186,5 +222,41 @@
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); dlg.open ? dlg.close() : open(); }
     });
     $$(".palette-btn").forEach(b => { b.hidden = false; b.addEventListener("click", open); });
+    document.addEventListener("keydown", e => {
+      if (e.key === "/" && !dlg.open && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) { e.preventDefault(); open(); }
+    });
+  }
+
+  /* ---------- light / dark theme ---------- */
+  const root = document.documentElement;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  $$("[data-theme-toggle]").forEach(b => {
+    b.setAttribute("aria-pressed", String(isDark()));
+    b.addEventListener("click", () => {
+      const next = isDark() ? "light" : "dark";
+      root.dataset.theme = next;
+      try { localStorage.setItem("pc-theme", next); } catch (e) { /* storage blocked */ }
+      $$("[data-theme-toggle]").forEach(x => x.setAttribute("aria-pressed", String(next === "dark")));
+    });
+  });
+
+  /* ---------- notification bell ---------- */
+  const bell = $("[data-bell]");
+  if (bell) {
+    document.addEventListener("click", e => { if (bell.open && !bell.contains(e.target)) bell.open = false; });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && bell.open) { bell.open = false; $("summary", bell).focus(); } });
+    const f = $("[data-read-all]", bell);
+    if (f) f.addEventListener("submit", async e => {
+      e.preventDefault();
+      try {
+        const r = await fetch(f.action, { method: "POST", body: new URLSearchParams(new FormData(f)), headers: { "X-Requested-With": "fetch" }, credentials: "same-origin" });
+        if (!r.ok) throw new Error(String(r.status));
+        $$("li.unread", bell).forEach(li => li.classList.remove("unread"));
+        const c = $(".count", bell);
+        if (c) c.hidden = true;
+        f.hidden = true;
+        toast("All notifications marked as read");
+      } catch (err) { f.submit(); }
+    });
   }
 })();

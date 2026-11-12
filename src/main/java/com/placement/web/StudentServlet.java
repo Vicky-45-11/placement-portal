@@ -57,10 +57,35 @@ public class StudentServlet extends BaseServlet {
 
     private void dashboard(Student me, HttpServletRequest req, HttpServletResponse res) throws Exception {
         req.setAttribute("counts", applications.countByStatusForStudent(me.getId()));
-        req.setAttribute("upcoming", interviews.listUpcomingForStudent(me.getId()));
+        List<com.placement.model.Interview> upcoming = interviews.listUpcomingForStudent(me.getId());
+        req.setAttribute("upcoming", upcoming);
         req.setAttribute("announcements", new AnnouncementDao().latest(5));
         List<Job> open = annotate(me, jobs.listOpen());
-        req.setAttribute("eligibleCount", open.stream().filter(j -> j.getIneligibleReason() == null && j.getApplicationStatus() == null).count());
+        List<Job> canApply = open.stream().filter(j -> j.getIneligibleReason() == null && j.getApplicationStatus() == null)
+                .sorted((a, b) -> Integer.compare(b.getMatch().getPercent(), a.getMatch().getPercent())).toList();
+        req.setAttribute("eligibleCount", canApply.size());
+        req.setAttribute("topPicks", canApply.stream().limit(3).toList());
+
+        com.placement.model.NextStep next;
+        if (me.isPlaced()) {
+            next = com.placement.model.NextStep.done("You're placed", "Offer from " + me.getPlacedCompany() + " at " + me.getPlacedCtc()
+                    + " LPA. Nothing else to do here.", "/student/applications", "See my offer");
+        } else if (!me.getMissingText().isEmpty()) {
+            next = com.placement.model.NextStep.todo("Finish your profile", "Add " + me.getMissingText()
+                    + ". Recruiters only see complete profiles, and you need a resume to apply.", "/student/profile", "Complete profile");
+        } else if (!upcoming.isEmpty()) {
+            com.placement.model.Interview i = upcoming.get(0);
+            next = com.placement.model.NextStep.todo("Prepare for your " + i.getRoundName() + " round", i.getCompanyName() + " · " + i.getJobTitle()
+                    + " · " + i.getScheduledAtText() + " · " + i.getMode().toLowerCase() + ".", "/student/applications", "See details");
+        } else if (!canApply.isEmpty()) {
+            Job best = canApply.get(0);
+            next = com.placement.model.NextStep.todo("Apply to " + best.getTitle(), best.getCompanyName() + " is your best match ("
+                    + best.getMatch().getPercent() + "%). Apply by " + best.getDeadlineText() + " (" + best.getCountdown().toLowerCase() + ").", "/student/job?id=" + best.getId(), "View drive");
+        } else {
+            next = com.placement.model.NextStep.done("You're all caught up", "No new drives for you right now. The bell will tell you when something changes.",
+                    "/student/applications", "My applications");
+        }
+        req.setAttribute("next", next);
         render(req, res, "student/dashboard");
     }
 
@@ -105,6 +130,8 @@ public class StudentServlet extends BaseServlet {
         } else {
             try {
                 applications.apply(jobId, me.getId());
+                com.placement.util.Notify.company(jobId, me.getName() + " (" + me.getDepartment() + ", CGPA " + me.getCgpa() + ") applied to "
+                        + j.getTitle() + ".", "/company/applicants?job=" + jobId);
                 Web.flash(req, "Applied to " + j.getTitle() + " at " + j.getCompanyName() + ".");
             } catch (SQLIntegrityConstraintViolationException e) {
                 Web.flashError(req, "You have already applied to this job.");

@@ -1,0 +1,11 @@
+<c:if test="${not empty next}">
+<section class="nextstep ${next.tone}" aria-label="What to do next">
+    <div class="ns-mark" aria-hidden="true">${next.tone == 'done' ? '&#10003;' : '&rarr;'}</div>
+    <div class="ns-body">
+        <span class="ns-eyebrow">${next.tone == 'done' ? 'Status' : 'Do this next'}</span>
+        <strong><c:out value="${next.title}"/></strong>
+        <p><c:out value="${next.text}"/></p>
+    </div>
+    <a class="btn ${next.tone == 'done' ? 'quiet' : 'accent'}" href="${ctx}${next.href}"><c:out value="${next.cta}"/></a>
+</section>
+</c:if>

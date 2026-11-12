@@ -133,6 +133,20 @@ CREATE TABLE announcements (
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
+-- In-app notifications (bell in the header)
+-- ---------------------------------------------------------------------
+CREATE TABLE notifications (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT NOT NULL,
+    body       VARCHAR(300) NOT NULL,
+    link       VARCHAR(200),                      -- page inside the app to open
+    is_read    BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_notif_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_notif_user (user_id, is_read, created_at)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- Reporting view: one row per student with placement outcome
 -- ---------------------------------------------------------------------
 CREATE VIEW v_student_placement AS
@@ -215,6 +229,13 @@ INSERT INTO placements (application_id, student_id, company_id, ctc_lpa, offer_d
 INSERT INTO announcements (title, body, created_by) VALUES
  ('Placement season 2025 is open', 'Update your profile and upload your latest resume before applying to any drive.', 1),
  ('Nimbus Technologies drive', 'Aptitude test for Software Engineer applicants on campus. Carry your college ID card.', 1);
+
+INSERT INTO notifications (user_id, body, link, is_read, created_at) VALUES
+ (2,  'Your interview for Software Engineer at Nimbus Technologies is scheduled. Check the date and venue.', '/student/applications', FALSE, NOW() - INTERVAL 2 HOUR),
+ (2,  'Placement season 2025 is open: update your profile and upload your latest resume.', '/student/', TRUE, NOW() - INTERVAL 3 DAY),
+ (10, 'Divya Nair applied to Software Engineer.', '/company/applicants?job=1', FALSE, NOW() - INTERVAL 5 HOUR),
+ (10, 'Lakshmi Priya applied to Software Engineer.', '/company/applicants?job=1', FALSE, NOW() - INTERVAL 1 DAY),
+ (1,  'BlueLeaf Systems registered and is waiting for your approval.', '/admin/companies', FALSE, NOW() - INTERVAL 6 HOUR);
 
 -- ---------------------------------------------------------------------
 -- Application user with only the rights the app needs.

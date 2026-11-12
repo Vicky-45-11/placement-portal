@@ -28,8 +28,31 @@ public class CompanyServlet extends BaseServlet {
                 List<Job> myJobs = jobs.listByCompany(me.getId());
                 req.setAttribute("jobs", myJobs);
                 req.setAttribute("applicantTotal", myJobs.stream().mapToInt(Job::getApplicantCount).sum());
-                req.setAttribute("interviews", interviews.listByCompany(me.getId()).stream()
-                        .filter(Interview::isUpcoming).toList());
+                List<Interview> upcoming = interviews.listByCompany(me.getId()).stream()
+                        .filter(Interview::isUpcoming).sorted(java.util.Comparator.comparing(Interview::getScheduledAt)).toList();
+                req.setAttribute("interviews", upcoming);
+                java.util.Map<Integer, Integer> waiting = applications.unreviewedByJob(me.getId());
+                req.setAttribute("waiting", waiting);
+                int waitingTotal = waiting.values().stream().mapToInt(Integer::intValue).sum();
+                com.placement.model.NextStep next;
+                if (myJobs.isEmpty()) {
+                    next = com.placement.model.NextStep.todo("Post your first drive", "Set the role, package, CGPA cut-off and skills. "
+                            + "Students who qualify see it straight away.", "/company/job/new", "Post a drive");
+                } else if (waitingTotal > 0) {
+                    Job top = myJobs.stream().filter(j -> waiting.containsKey(j.getId()))
+                            .max(java.util.Comparator.comparingInt(j -> waiting.get(j.getId()))).orElse(myJobs.get(0));
+                    next = com.placement.model.NextStep.todo(waitingTotal + " new applicant" + (waitingTotal == 1 ? "" : "s") + " to review",
+                            waiting.get(top.getId()) + " waiting on " + top.getTitle() + ". Drag them to Shortlisted or Rejected on the board.",
+                            "/company/applicants?job=" + top.getId(), "Open hiring board");
+                } else if (!upcoming.isEmpty()) {
+                    Interview i = upcoming.get(0);
+                    next = com.placement.model.NextStep.todo("Next interview: " + i.getStudentName(), i.getRoundName() + " round for " + i.getJobTitle()
+                            + " · " + i.getScheduledAtText() + ". Record the result after it ends.", "/company/interviews", "Open calendar");
+                } else {
+                    next = com.placement.model.NextStep.done("You're all caught up", "Every applicant has been reviewed. New applications show up in the bell.",
+                            "/company/jobs", "My drives");
+                }
+                req.setAttribute("next", next);
                 render(req, res, "company/dashboard");
             }
             case "profile" -> { if (post) saveProfile(me, req, res); else render(req, res, "company/profile"); }
@@ -73,6 +96,8 @@ public class CompanyServlet extends BaseServlet {
                 String status = Web.str(req, "status");
                 if (post && a != null && isValidStatus(status)) {
                     applications.updateStatus(a.getId(), status);
+                    if (!status.equals(a.getStatus()))
+                        com.placement.util.Notify.student(a.getId(), com.placement.util.Notify.statusText(status, a.getJobTitle(), a.getCompanyName()), "/student/applications");
                     if (isAjax(req)) { res.setStatus(HttpServletResponse.SC_NO_CONTENT); return; }
                     Web.flash(req, a.getStudentName() + " moved to " + status + ".");
                 }
@@ -90,6 +115,9 @@ public class CompanyServlet extends BaseServlet {
                 String result = Web.str(req, "result");
                 if (post && a != null && List.of("PENDING", "PASSED", "FAILED").contains(result)) {
                     interviews.updateResult(i.getId(), result, Web.strOrNull(req, "notes"));
+                    if (!result.equals(i.getResult()) && !"PENDING".equals(result))
+                        com.placement.util.Notify.student(a.getId(), "Result for your " + i.getRoundName() + " round (" + a.getJobTitle() + ", "
+                                + a.getCompanyName() + "): " + ("PASSED".equals(result) ? "passed." : "not cleared."), "/student/applications");
                     Web.flash(req, "Interview result saved.");
                 }
                 redirect(req, res, "/company/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");

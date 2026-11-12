@@ -27,10 +27,32 @@ public class AdminServlet extends BaseServlet {
     protected void handle(String action, boolean post, HttpServletRequest req, HttpServletResponse res) throws Exception {
         switch (action) {
             case "" -> {
-                req.setAttribute("stats", reports.summary());
+                java.util.Map<String, Object> stats = reports.summary();
+                req.setAttribute("stats", stats);
                 req.setAttribute("byDept", reports.byDepartment());
-                req.setAttribute("funnel", reports.statusCounts());
+                java.util.Map<String, Integer> funnel = reports.statusCounts();
+                req.setAttribute("funnel", funnel);
                 req.setAttribute("recent", applications.listAll(null).stream().limit(8).toList());
+                int pending = ((Number) stats.get("pendingCompanies")).intValue();
+                java.util.List<Job> closing = jobs.listAll().stream().filter(j -> "OPEN".equals(j.getStatus()) && j.isClosingSoon())
+                        .sorted(java.util.Comparator.comparingLong(Job::getDaysLeft)).toList();
+                req.setAttribute("closing", closing);
+                int unreviewed = funnel.getOrDefault("APPLIED", 0);
+                com.placement.model.NextStep next;
+                if (pending > 0) {
+                    next = com.placement.model.NextStep.todo("Approve " + pending + " recruiter" + (pending == 1 ? "" : "s"),
+                            "They can't post drives or log in until you approve them.", "/admin/companies", "Review recruiters");
+                } else if (!closing.isEmpty()) {
+                    Job j = closing.get(0);
+                    next = com.placement.model.NextStep.todo(j.getTitle() + " closes soon", j.getCompanyName() + " · " + j.getCountdown().toLowerCase() + " · "
+                            + j.getApplicantCount() + " applied so far. Post a reminder so eligible students don't miss it.", "/admin/announcements", "Post a notice");
+                } else if (unreviewed > 0) {
+                    next = com.placement.model.NextStep.todo(unreviewed + " application" + (unreviewed == 1 ? "" : "s") + " not reviewed yet",
+                            "They're still at APPLIED. Nudge the recruiters or move them yourself.", "/admin/applications?status=APPLIED", "See applications");
+                } else {
+                    next = com.placement.model.NextStep.done("Everything is moving", "No approvals waiting and no drives about to close.", "/admin/reports", "Open reports");
+                }
+                req.setAttribute("next", next);
                 render(req, res, "admin/dashboard");
             }
             // ---------- students ----------
@@ -61,6 +83,7 @@ public class AdminServlet extends BaseServlet {
                 Company c = companies.findById(Web.intParam(req, "id", 0));
                 if (post && c != null) {
                     new UserDao().setActive(c.getUserId(), !c.isActive());
+                    if (!c.isActive()) com.placement.util.Notify.user(c.getUserId(), "Welcome aboard: the placement cell approved your recruiter account. Post your first drive.", "/company/job/new");
                     Web.flash(req, c.getName() + (c.isActive() ? " disabled." : " approved."));
                 }
                 redirect(req, res, "/admin/companies");
@@ -122,6 +145,8 @@ public class AdminServlet extends BaseServlet {
                 String status = Web.str(req, "status");
                 if (post && a != null && isValidStatus(status)) {
                     applications.updateStatus(a.getId(), status);
+                    if (!status.equals(a.getStatus()))
+                        com.placement.util.Notify.student(a.getId(), com.placement.util.Notify.statusText(status, a.getJobTitle(), a.getCompanyName()), "/student/applications");
                     if (isAjax(req)) { res.setStatus(HttpServletResponse.SC_NO_CONTENT); return; }
                     Web.flash(req, a.getStudentName() + " moved to " + status + ".");
                 }
@@ -140,6 +165,9 @@ public class AdminServlet extends BaseServlet {
                 String result = Web.str(req, "result");
                 if (post && a != null && java.util.List.of("PENDING", "PASSED", "FAILED").contains(result)) {
                     interviews.updateResult(i.getId(), result, Web.strOrNull(req, "notes"));
+                    if (!result.equals(i.getResult()) && !"PENDING".equals(result))
+                        com.placement.util.Notify.student(a.getId(), "Result for your " + i.getRoundName() + " round (" + a.getJobTitle() + ", "
+                                + a.getCompanyName() + "): " + ("PASSED".equals(result) ? "passed." : "not cleared."), "/student/applications");
                     Web.flash(req, "Interview result saved.");
                 }
                 redirect(req, res, "/admin/applicants?job=" + (a == null ? 0 : a.getJobId()) + "#details");
@@ -169,6 +197,7 @@ public class AdminServlet extends BaseServlet {
                         Web.flashError(req, "Title and message are both required.");
                     } else {
                         announcements.create(title, body, Web.currentUserId(req));
+                        com.placement.util.Notify.allStudents("New notice from the placement cell: " + title, "/student/");
                         Web.flash(req, "Announcement posted.");
                     }
                     redirect(req, res, "/admin/announcements");

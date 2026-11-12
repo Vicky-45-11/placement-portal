@@ -8,9 +8,7 @@
         <p>Here is where your placement stands today.</p></div>
     <a class="btn accent" href="${ctx}/student/jobs?filter=eligible">Drives I can apply to (${eligibleCount})</a>
 </div>
-<c:if test="${me.placed}">
-    <div class="alert ok"><strong>You're placed.</strong> Offer from <c:out value="${me.placedCompany}"/> at ${me.placedCtc} LPA. You can't apply to other drives after an offer.</div>
-</c:if>
+<%@ include file="/WEB-INF/views/common/next.jspf" %>
 <div class="ledger">
     <div class="cell feature"><div class="label">Open to you</div><div class="value">${eligibleCount}</div><div class="sub">eligible, not applied yet</div></div>
     <div class="cell"><div class="label">Applied</div><div class="value">${counts.APPLIED + counts.SHORTLISTED + counts.INTERVIEW + counts.SELECTED + counts.REJECTED}</div></div>
@@ -20,7 +18,8 @@
 <div class="grid side">
     <div>
         <div class="card">
-            <h2>Get ready to apply</h2>
+            <div class="ready-head"><h2>Get ready to apply</h2><span class="ready-pct">${me.readiness}%<small>profile ready</small></span></div>
+            <div class="meter" role="progressbar" aria-valuenow="${me.readiness}" aria-valuemin="0" aria-valuemax="100" aria-label="Profile readiness"><span style="--w:${me.readiness}%"></span></div>
             <ol class="steps">
                 <li class="done">Create your account</li>
                 <li class="${me.cgpa > 0 and not empty me.skills ? 'done' : ''}">Fill in CGPA and skills in <a href="${ctx}/student/profile">your profile</a></li>
@@ -28,6 +27,20 @@
                 <li class="${(counts.APPLIED + counts.SHORTLISTED + counts.INTERVIEW + counts.SELECTED + counts.REJECTED) > 0 ? 'done' : ''}">Apply to a <a href="${ctx}/student/jobs?filter=eligible">drive you qualify for</a></li>
             </ol>
         </div>
+        <c:if test="${not empty topPicks}">
+        <div class="card">
+            <h2>Best matches for you</h2>
+            <p class="small muted" style="margin-top:-6px">Open drives you qualify for and haven't applied to, ranked by skill match.</p>
+            <ul class="picks">
+                <c:forEach items="${topPicks}" var="j">
+                    <li><c:set var="m" value="${j.match}"/><c:set var="ringSize" value="sm"/><%@ include file="/WEB-INF/views/common/ring.jspf" %>
+                        <div class="pk"><a href="${ctx}/student/job?id=${j.id}"><c:out value="${j.title}"/></a>
+                            <span class="small muted"><c:out value="${j.companyName}"/> · ${j.ctcLpa} LPA</span></div>
+                        <span class="countdown ${j.closingSoon ? 'soon' : ''}">${j.countdown}</span></li>
+                </c:forEach>
+            </ul>
+        </div>
+        </c:if>
         <div class="card">
             <h2>Coming up</h2>
             <c:forEach items="${upcoming}" var="i">

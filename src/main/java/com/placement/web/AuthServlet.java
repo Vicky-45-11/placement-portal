@@ -99,6 +99,7 @@ public class AuthServlet extends BaseServlet {
             if (c.getName().isEmpty()) error = "Company name is required.";
             if (error == null) {
                 users.registerCompany(name, email, password, c);
+                com.placement.util.Notify.admins(c.getName() + " registered as a recruiter and is waiting for your approval.", "/admin/companies");
                 Web.flash(req, "Company registered. You can log in once the placement cell approves your account.");
                 redirect(req, res, "/login");
                 return;

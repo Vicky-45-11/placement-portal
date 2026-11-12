@@ -4,7 +4,7 @@
 # Every value can also be set with an environment variable, which wins over this file:
 #   DB_URL, DB_USER, DB_PASSWORD, UPLOAD_DIR
 
-db.url=jdbc:mysql://localhost:3306/placement_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata
+db.url=jdbc:mysql://localhost:3306/placement_db?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=SERVER
 db.user=placement_app
 db.password=change_me
 

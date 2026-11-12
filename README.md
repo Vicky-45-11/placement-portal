@@ -24,6 +24,11 @@ The UI is built to feel like a college notice board and placement register, not 
 - **Charts in plain SVG/CSS** on reports: placement donut, department bars, application funnel, offers by package band.
 - **Interview calendar**: month view with every round, for recruiters and the admin.
 - **Offer wall** marquee of recent offers on the home page, and a **Ctrl/Cmd + K** jump palette on every signed-in page.
+- **Notification bell**: students hear when they are shortlisted, moved to interview, selected or rejected, when a round is scheduled or a result is saved, and when the cell posts a notice. Recruiters hear about every new applicant, admins about new recruiter sign-ups. Full inbox at `/notifications`.
+- **"Do this next" strip** on every dashboard that picks the one most useful action (finish your profile, review 3 new applicants, approve a recruiter, a drive closing soon) plus a profile readiness meter and "best matches for you" for students.
+- **Record search** in the Ctrl/Cmd + K (or `/`) palette: admins find students, drives and recruiters; recruiters find their drives and applicants; students find open drives by role, company, skill or city. Each role only sees what it is allowed to.
+- **Light and dark theme**, following the system setting until you pick one.
+- All dates and times are shown in India time (`APP_TIMEZONE` to change it), whatever zone the server runs in.
 - Every page still works with JavaScript off; the scripts only add on top.
 
 **Rules the app enforces**
@@ -152,3 +157,5 @@ See **[DEPLOY.md](DEPLOY.md)**. The included `Dockerfile` runs on Railway or Ren
 | ![Student drives](docs/screenshots/student-jobs.png) | ![Admin dashboard](docs/screenshots/admin-dashboard.png) |
 | ![Hiring board](docs/screenshots/company-board.png) | ![Student tracker](docs/screenshots/student-tracker.png) |
 | ![Reports](docs/screenshots/admin-reports.png) | ![Interview calendar](docs/screenshots/interview-calendar.png) |
+| ![Student dashboard](docs/screenshots/student-dashboard.png) | ![Notifications](docs/screenshots/notifications.png) |
+| ![Search](docs/screenshots/search.png) | ![Dark mode](docs/screenshots/dark-mode.png) |

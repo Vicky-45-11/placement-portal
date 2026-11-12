@@ -11,8 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${ctx}/assets/style.css">
+    <script>try{var t=localStorage.getItem("pc-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 </head>
-<body class="${empty role ? 'public' : 'app'}">
+<body class="${empty role ? 'public' : 'app'}" data-ctx="${ctx}">
 <header class="masthead">
     <div class="mast-inner">
         <a href="${ctx}/" class="wordmark">
@@ -22,14 +23,33 @@
         <c:choose>
             <c:when test="${not empty role}">
                 <div class="who">
-                    <button type="button" class="palette-btn" hidden title="Quick jump (Ctrl+K)"><span class="lbl">Jump to</span><span class="kbd">Ctrl K</span></button>
+                    <button type="button" class="palette-btn" hidden title="Search (Ctrl+K or /)"><span class="lbl">Search</span><span class="kbd">Ctrl K</span></button>
+                    <button type="button" class="theme-btn" data-theme-toggle aria-label="Switch light or dark theme" title="Light / dark"><span class="sun" aria-hidden="true">&#9728;</span><span class="moon" aria-hidden="true">&#9790;</span></button>
+                    <details class="bell" data-bell>
+                        <summary aria-label="Notifications${bellUnread > 0 ? ', unread: ' : ''}${bellUnread > 0 ? bellUnread : ''}">
+                            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.4 15.4A1 1 0 0 0 5.3 17h13.4a1 1 0 0 0 .9-1.6L18 12.6V9a6 6 0 0 0-6-6Zm-2.4 15.5a2.5 2.5 0 0 0 4.8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                            <c:if test="${bellUnread > 0}"><span class="count">${bellUnread > 9 ? '9+' : bellUnread}</span></c:if>
+                        </summary>
+                        <div class="bell-panel">
+                            <div class="bell-head"><strong>Notifications</strong>
+                                <c:if test="${bellUnread > 0}"><form method="post" action="${ctx}/notifications/read-all" class="inline" data-read-all><input type="hidden" name="_csrf" value="${sessionScope.csrf}"><button class="text-btn">Mark all read</button></form></c:if>
+                            </div>
+                            <ul>
+                                <c:forEach items="${bellItems}" var="n">
+                                    <li class="${n.read ? '' : 'unread'}"><a href="${ctx}/notifications/open?id=${n.id}"><span class="txt"><c:out value="${n.body}"/></span><span class="ago">${n.ago}</span></a></li>
+                                </c:forEach>
+                                <c:if test="${empty bellItems}"><li class="none">You're up to date.</li></c:if>
+                            </ul>
+                            <a class="bell-all" href="${ctx}/notifications">See all notifications</a>
+                        </div>
+                    </details>
                     <span class="who-name"><c:out value="${sessionScope.userName}"/></span>
                     <span class="who-role"><c:out value="${role == 'COMPANY' ? sessionScope.companyName : (role == 'ADMIN' ? 'Placement officer' : 'Student')}"/></span>
                     <form method="post" action="${ctx}/logout" class="inline"><input type="hidden" name="_csrf" value="${sessionScope.csrf}"><button class="text-btn">Log out</button></form>
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="actions"><a class="btn quiet" href="${ctx}/login">Log in</a><a class="btn" href="${ctx}/register">Register</a></div>
+                <div class="actions"><button type="button" class="theme-btn" data-theme-toggle aria-label="Switch light or dark theme" title="Light / dark"><span class="sun" aria-hidden="true">&#9728;</span><span class="moon" aria-hidden="true">&#9790;</span></button><a class="btn quiet" href="${ctx}/login">Log in</a><a class="btn" href="${ctx}/register">Register</a></div>
             </c:otherwise>
         </c:choose>
     </div>

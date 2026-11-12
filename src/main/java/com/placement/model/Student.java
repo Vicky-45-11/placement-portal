@@ -20,6 +20,28 @@ public class Student {
     private BigDecimal placedCtc;
 
     public boolean isPlaced() { return placedCompany != null; }
+    /** Profile readiness: phone, CGPA, skills and resume, 25% each. */
+    public int getReadiness() {
+        int done = 0;
+        if (phone != null && !phone.isBlank()) done++;
+        if (cgpa != null && cgpa.signum() > 0) done++;
+        if (skills != null && !skills.isBlank()) done++;
+        if (isHasResume()) done++;
+        return done * 25;
+    }
+
+    /** What is still missing from the profile, in plain words, or an empty string. */
+    public String getMissingText() {
+        java.util.List<String> m = new java.util.ArrayList<>();
+        if (cgpa == null || cgpa.signum() <= 0) m.add("your CGPA");
+        if (skills == null || skills.isBlank()) m.add("your skills");
+        if (phone == null || phone.isBlank()) m.add("a phone number");
+        if (!isHasResume()) m.add("a PDF resume");
+        if (m.isEmpty()) return "";
+        if (m.size() == 1) return m.get(0);
+        return String.join(", ", m.subList(0, m.size() - 1)) + " and " + m.get(m.size() - 1);
+    }
+
     public boolean isHasResume() { return resumeFile != null && !resumeFile.isBlank(); }
 
     public int getId() { return id; }

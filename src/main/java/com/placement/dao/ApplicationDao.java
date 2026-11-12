@@ -127,6 +127,20 @@ public class ApplicationDao {
         }
     }
 
+    /** jobId -> number of applications still in APPLIED (not reviewed yet) for one company's drives. */
+    public Map<Integer, Integer> unreviewedByJob(int companyId) throws SQLException {
+        Map<Integer, Integer> out = new HashMap<>();
+        try (Connection c = DB.get(); PreparedStatement ps = c.prepareStatement(
+                "SELECT a.job_id, COUNT(*) FROM applications a JOIN jobs j ON j.id = a.job_id "
+              + "WHERE j.company_id = ? AND a.status = 'APPLIED' GROUP BY a.job_id")) {
+            ps.setInt(1, companyId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) out.put(rs.getInt(1), rs.getInt(2));
+            }
+        }
+        return out;
+    }
+
     public Map<String, Integer> countByStatusForStudent(int studentId) throws SQLException {
         Map<String, Integer> out = new HashMap<>();
         for (String s : Application.STATUSES) out.put(s, 0);

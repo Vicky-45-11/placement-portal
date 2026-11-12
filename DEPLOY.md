@@ -27,7 +27,7 @@ Render has no MySQL, so create one first, for example a free MySQL service on ht
 1. Create the MySQL database and copy its host, port, user, password and database name.
 2. On https://render.com: **New → Web Service →** connect `Vicky-45-11/placement-portal`. Render detects the Dockerfile.
 3. Add environment variables:
-   - `DB_URL` = `jdbc:mysql://HOST:PORT/DBNAME?sslMode=REQUIRED&serverTimezone=Asia/Kolkata`
+   - `DB_URL` = `jdbc:mysql://HOST:PORT/DBNAME?sslMode=REQUIRED&connectionTimeZone=SERVER`
    - `DB_USER`, `DB_PASSWORD`
 4. Deploy. The free instance sleeps after 15 minutes idle, so the first visit after a break takes about a minute.
 

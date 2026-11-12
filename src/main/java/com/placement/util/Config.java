@@ -39,7 +39,7 @@ public final class Config {
             String port = envOr("MYSQLPORT", "3306");
             String db = envOr("MYSQLDATABASE", "railway");
             return "jdbc:mysql://" + host + ":" + port + "/" + db
-                    + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Kolkata";
+                    + "?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=SERVER";
         }
         return get("db.url", "DB_URL", "jdbc:mysql://localhost:3306/placement_db");
     }

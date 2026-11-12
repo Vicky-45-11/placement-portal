@@ -22,6 +22,9 @@ public class DbInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
+        // Show every date and time in the college's zone (default India), whatever zone the host runs in.
+        String zone = System.getenv("APP_TIMEZONE");
+        java.util.TimeZone.setDefault(java.util.TimeZone.getTimeZone(zone == null || zone.isBlank() ? "Asia/Kolkata" : zone));
         if (!Config.autoInitDb()) return;
         try (Connection c = DB.get(); Statement st = c.createStatement()) {
             try (ResultSet rs = c.getMetaData().getTables(c.getCatalog(), null, "users", new String[]{"TABLE"})) {
@@ -51,6 +54,13 @@ public class DbInitializer implements ServletContextListener {
 
     /** Small in-place upgrades for databases created by an older version of schema.sql. */
     private static void migrate(Connection c, Statement st) throws java.sql.SQLException {
+        try (ResultSet t = c.getMetaData().getTables(c.getCatalog(), null, "notifications", new String[]{"TABLE"})) {
+            if (!t.next()) st.execute("CREATE TABLE notifications (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT NOT NULL, "
+                    + "body VARCHAR(300) NOT NULL, link VARCHAR(200), is_read BOOLEAN NOT NULL DEFAULT FALSE, "
+                    + "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                    + "CONSTRAINT fk_notif_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, "
+                    + "INDEX idx_notif_user (user_id, is_read, created_at)) ENGINE=InnoDB");
+        }
         try (ResultSet col = c.getMetaData().getColumns(c.getCatalog(), null, "jobs", "required_skills")) {
             if (col.next()) return;
         }

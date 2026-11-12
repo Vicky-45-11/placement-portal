@@ -6,6 +6,7 @@
     <div><span class="eyebrow">Recruiter overview</span><h1><c:out value="${me.name}"/></h1><p class="muted"><c:out value="${me.industry}"/> · <c:out value="${me.location}"/></p></div>
     <a class="btn accent" href="${ctx}/company/job/new">Post a drive</a>
 </div>
+<%@ include file="/WEB-INF/views/common/next.jspf" %>
 <div class="ledger">
     <div class="cell"><div class="label">Drives posted</div><div class="value">${me.jobCount}</div></div>
     <div class="cell"><div class="label">Applicants</div><div class="value">${applicantTotal}</div></div>
@@ -18,7 +19,7 @@
         <table><thead><tr><th>Role</th><th class="num">Applicants</th><th>Status</th></tr></thead><tbody>
         <c:forEach items="${jobs}" var="j">
             <tr><td><a href="${ctx}/company/applicants?job=${j.id}"><c:out value="${j.title}"/></a><div class="small muted">Apply by ${j.deadlineText}</div></td>
-                <td class="num">${j.applicantCount}</td><td><span class="badge st-${j.status}">${j.status}</span></td></tr>
+                <td class="num">${j.applicantCount}<c:if test="${waiting[j.id] > 0}"> <span class="new-pill" title="Not reviewed yet">${waiting[j.id]} new</span></c:if></td><td><span class="badge st-${j.status}">${j.status}</span></td></tr>
         </c:forEach>
         </tbody></table>
         <c:if test="${empty jobs}"><p class="empty">No drives yet.</p></c:if>

@@ -123,6 +123,8 @@ public abstract class BaseServlet extends HttpServlet {
             return;
         }
         interviews.schedule(i);
+        com.placement.util.Notify.student(a.getId(), i.getRoundName() + " round for " + a.getJobTitle() + " at " + a.getCompanyName()
+                + " on " + i.getScheduledAtText() + " (" + i.getMode().toLowerCase() + ").", "/student/");
         Web.flash(req, i.getRoundName() + " round scheduled for " + a.getStudentName() + ".");
     }
 

@@ -8,7 +8,7 @@
     <thead><tr><th>Company</th><th>Industry</th><th>Contact</th><th class="num">Drives</th><th class="num">Hired</th><th>Account</th><th></th></tr></thead>
     <tbody>
     <c:forEach items="${companies}" var="co">
-        <tr><td><strong><c:out value="${co.name}"/></strong><div class="small muted"><c:out value="${co.location}"/></div></td>
+        <tr id="c${co.id}"><td><strong><c:out value="${co.name}"/></strong><div class="small muted"><c:out value="${co.location}"/></div></td>
             <td><c:out value="${co.industry}"/></td><td class="small"><c:out value="${co.email}"/></td>
             <td class="num">${co.jobCount}</td><td class="num">${co.hiredCount}</td>
             <td><span class="badge st-${co.active ? 'ACTIVE' : 'PENDING'}">${co.active ? 'Active' : 'Pending'}</span></td>

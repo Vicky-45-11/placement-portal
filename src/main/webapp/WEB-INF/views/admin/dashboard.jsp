@@ -6,9 +6,7 @@
     <div><span class="eyebrow">Placement officer</span><h1>Season overview</h1><p>Live from the database. Placed means at least one SELECTED offer.</p></div>
     <div class="actions"><a class="btn ghost" href="${ctx}/admin/reports/placements.csv">Export placements (CSV)</a><a class="btn accent" href="${ctx}/admin/job/new">New drive</a></div>
 </div>
-<c:if test="${stats.pendingCompanies > 0}">
-    <div class="alert info">${stats.pendingCompanies} recruiter account(s) waiting for approval. <a href="${ctx}/admin/companies">Review</a></div>
-</c:if>
+<%@ include file="/WEB-INF/views/common/next.jspf" %>
 <div class="ledger">
     <div class="cell feature"><div class="label">Placement rate</div><div class="value">${stats.placedPercent}<span class="unit">%</span></div><div class="sub">${stats.placed} of ${stats.students} students placed</div></div>
     <div class="cell"><div class="label">Best offer</div><div class="value">${stats.highestCtc}<span class="unit">LPA</span></div><div class="sub">average ${stats.averageCtc}</div></div>
