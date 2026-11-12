@@ -1,6 +1,21 @@
 <%@ include file="/WEB-INF/views/common/taglibs.jspf" %>
 <c:set var="pageTitle" value="Log in" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
+<div class="auth-split">
+<aside class="pass" aria-hidden="true">
+    <div class="pass-main">
+        <span class="pass-k">Placement pass</span>
+        <span class="pass-title">Season 2025</span>
+        <dl>
+            <div><dt>Holder</dt><dd>You</dd></div>
+            <div><dt>Gate</dt><dd>Drives</dd></div>
+            <div><dt>Board by</dt><dd>Deadline</dd></div>
+            <div><dt>Destination</dt><dd>Offer letter</dd></div>
+        </dl>
+        <span class="pass-stamp">Admit one</span>
+    </div>
+    <div class="pass-stub"><span class="bars"></span><span class="pass-no">PC-2025-0001</span></div>
+</aside>
 <div class="auth">
     <span class="eyebrow">Welcome back</span>
     <h1>Log in</h1>
@@ -21,5 +36,6 @@
         Student: <code>arun@student.college.edu</code> / <code>student123</code><br>
         Recruiter: <code>hr@nimbustech.example</code> / <code>company123</code></p>
     </details>
+</div>
 </div>
 <%@ include file="/WEB-INF/views/common/footer.jspf" %>

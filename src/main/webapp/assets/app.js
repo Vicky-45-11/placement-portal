@@ -44,6 +44,29 @@
     el.style.setProperty("--i", Math.min(i, 12));
   });
 
+  /* ---------- numbers count up when they first appear ---------- */
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const node = en.target.firstChild;
+      const raw = node.nodeValue.trim();
+      const end = parseFloat(raw);
+      const decimals = (raw.split(".")[1] || "").length;
+      const t0 = performance.now(), dur = 900;
+      const step = now => {
+        const k = Math.min(1, (now - t0) / dur), eased = 1 - Math.pow(1 - k, 3);
+        node.nodeValue = (end * eased).toFixed(decimals);
+        if (k < 1) requestAnimationFrame(step); else node.nodeValue = raw;
+      };
+      requestAnimationFrame(step);
+    }), { threshold: .4 });
+    $$(".ledger .value").forEach(v => {
+      const n = v.firstChild;
+      if (n && n.nodeType === 3 && /^\s*\d+(\.\d+)?\s*$/.test(n.nodeValue)) io.observe(v);
+    });
+  }
+
   /* ---------- drag-and-drop hiring board ---------- */
   const board = $(".board");
   if (board) {

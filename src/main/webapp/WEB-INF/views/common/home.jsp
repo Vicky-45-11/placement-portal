@@ -4,18 +4,22 @@
 <section class="hero">
     <div>
         <span class="eyebrow">Training &amp; Placement Cell</span>
-        <h1>Every drive, every application, <em>every offer</em>, in one register.</h1>
+        <h1>Every drive, every application, <em class="swash">every offer<svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 60 6, 120 4, 180 9 S 270 18, 296 7" /></svg></em>, in one register.</h1>
         <p class="lede">Students see only the drives they qualify for. Recruiters shortlist and interview in one place. The placement cell always knows who is placed.</p>
         <div class="actions">
             <a class="btn accent" href="${ctx}/register">I'm a student</a>
             <a class="btn quiet" href="${ctx}/register?type=company">I'm a recruiter</a>
         </div>
     </div>
+    <div class="hero-board">
+    <span class="tape t1" aria-hidden="true"></span><span class="tape t2" aria-hidden="true"></span>
+    <span class="rubber" aria-hidden="true">Season<br><b>2025</b><br>open</span>
     <div class="ledger" style="margin:0">
         <div class="cell feature"><div class="label">Placed so far</div><div class="value">${stats.placedPercent}<span class="unit">%</span></div><div class="sub">${stats.placed} of ${stats.students} students</div></div>
         <div class="cell"><div class="label">Best offer</div><div class="value">${stats.highestCtc}<span class="unit">LPA</span></div></div>
         <div class="cell"><div class="label">Recruiters</div><div class="value">${stats.companies}</div></div>
         <div class="cell"><div class="label">Open drives</div><div class="value">${stats.openJobs}</div></div>
+    </div>
     </div>
 </section>
 
@@ -30,7 +34,7 @@
     </div>
 </div>
 </c:if>
-<div class="how">
+<div class="how steps-3">
     <div><span class="eyebrow">Step 1</span><b>Build your profile</b><span class="small muted">Add CGPA, backlogs and skills, then upload a PDF resume.</span></div>
     <div><span class="eyebrow">Step 2</span><b>Apply where you qualify</b><span class="small muted">Each drive checks CGPA, backlogs, department and deadline for you.</span></div>
     <div><span class="eyebrow">Step 3</span><b>Track it to the offer</b><span class="small muted">Watch each application move from shortlist to interview to offer.</span></div>

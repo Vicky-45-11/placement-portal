@@ -565,3 +565,93 @@ html, body { transition: background-color .25s, color .25s; }
 tr:target td { background: var(--accent-soft); transition: background 1s; }
 @media (max-width: 720px) { .theme-btn { width: 28px; height: 28px; } .bell summary { width: 30px; height: 30px; } }
 @media (max-width: 720px) { .masthead > .mast-inner { position: relative; } .bell { position: static; } .bell-panel { position: absolute; left: 12px; right: 12px; top: calc(100% + 6px); width: auto; } }
+
+/* ======================================================================
+   v5: a little more character. Paper grain, washi tape, rubber stamps,
+   a hand-drawn swash, ticket-style login pass, counting numerals.
+   ====================================================================== */
+:root { --grain: .05; --tape: rgba(233, 185, 73, .55); --tape-2: rgba(120, 170, 200, .45); }
+:root[data-theme="dark"] { --grain: .07; --tape: rgba(233, 185, 73, .35); --tape-2: rgba(120, 170, 200, .3); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --grain: .07; --tape: rgba(233, 185, 73, .35); --tape-2: rgba(120, 170, 200, .3); } }
+
+/* paper grain over the whole page, never blocks clicks */
+body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.masthead, main.wrap, footer { position: relative; z-index: 1; }
+.masthead { z-index: 5; }
+
+/* hand-drawn swash under the hero's key phrase */
+.hero h1 em.swash { position: relative; white-space: nowrap; }
+.swash svg { position: absolute; left: -2%; bottom: -.12em; width: 104%; height: .32em; overflow: visible; }
+.swash path { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 340; stroke-dashoffset: 340; animation: draw 1.1s .5s cubic-bezier(.6,.1,.2,1) forwards; opacity: .85; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* stats pinned to the board with tape and a rubber stamp */
+.hero-board { position: relative; transform: rotate(.6deg); }
+.hero-board .ledger { box-shadow: 6px 8px 0 -2px var(--rule-soft), 0 18px 30px -22px var(--shadow); }
+.tape { position: absolute; width: 92px; height: 24px; background: var(--tape); z-index: 2; mix-blend-mode: multiply; box-shadow: 0 1px 1px rgba(0,0,0,.06);
+  clip-path: polygon(0 8%, 6% 0, 12% 10%, 20% 2%, 30% 9%, 40% 1%, 52% 8%, 62% 0, 74% 9%, 86% 1%, 94% 8%, 100% 3%, 100% 92%, 94% 100%, 84% 91%, 72% 99%, 60% 92%, 48% 100%, 36% 92%, 24% 99%, 12% 91%, 4% 100%, 0 94%); }
+:root[data-theme="dark"] .tape { mix-blend-mode: screen; }
+.tape.t1 { top: -11px; left: 18px; transform: rotate(-6deg); }
+.tape.t2 { top: -10px; right: 22px; transform: rotate(5deg); background: var(--tape-2); }
+.rubber { position: absolute; right: -14px; bottom: -26px; z-index: 3; width: 104px; height: 104px; border-radius: 50%; border: 3px double var(--accent); color: var(--accent);
+  display: grid; place-content: center; text-align: center; font: 600 .62rem/1.15 var(--mono); letter-spacing: .14em; text-transform: uppercase; transform: rotate(-14deg);
+  background: color-mix(in srgb, var(--paper) 70%, transparent); opacity: 0; animation: thump .5s 1.2s cubic-bezier(.3,1.6,.5,1) forwards; }
+.rubber b { font: 700 1.5rem/1 var(--serif); letter-spacing: 0; }
+@keyframes thump { from { opacity: 0; transform: rotate(-14deg) scale(1.8); } to { opacity: .9; transform: rotate(-14deg) scale(1); } }
+
+/* how it works: big outlined numerals joined by a dotted route */
+.how.steps-3 { counter-reset: step; background: transparent; border: 0; gap: 18px; position: relative; }
+.how.steps-3::before { content: ""; position: absolute; left: 8%; right: 8%; top: 46px; border-top: 2px dotted var(--rule); z-index: 0; }
+.how.steps-3 > div { counter-increment: step; background: var(--card); border: 1px solid var(--rule); border-radius: 4px; position: relative; z-index: 1; padding-top: 58px; transition: transform .2s, box-shadow .2s; }
+.how.steps-3 > div:hover { transform: translateY(-3px) rotate(-.4deg); box-shadow: 0 14px 24px -18px var(--shadow); }
+.how.steps-3 > div::before { content: "0" counter(step); position: absolute; top: 10px; left: 18px; font: 700 2.6rem/1 var(--serif); color: transparent; -webkit-text-stroke: 1.4px var(--accent); }
+.how.steps-3 > div:last-child { border-right: 1px solid var(--rule); }
+
+/* pins on the notice board get a strip of tape */
+.pin { position: relative; }
+.pin::before { content: ""; position: absolute; top: -9px; left: 50%; width: 70px; height: 18px; margin-left: -35px; background: var(--tape); transform: rotate(-3deg); mix-blend-mode: multiply; }
+.pin:nth-child(even)::before { background: var(--tape-2); transform: rotate(4deg); }
+:root[data-theme="dark"] .pin::before { mix-blend-mode: screen; }
+
+/* active nav tab: a marker stroke instead of a flat line */
+.tabs-inner a.on { border-bottom-color: transparent; position: relative; }
+.tabs-inner a.on::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M1 5 C 20 1, 40 7, 60 3 S 90 2, 99 5' fill='none' stroke='%23c2410c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+
+/* page heads: newspaper double rule */
+.page-head { border-bottom: 0; background: linear-gradient(var(--ink), var(--ink)) bottom / 100% 2px no-repeat, linear-gradient(var(--ink), var(--ink)) bottom 4px left 0 / 100% 1px no-repeat; padding-bottom: 22px; }
+
+/* ledger: stats lift a little on hover */
+.ledger .cell { transition: background .2s; }
+.ledger .cell:not(.feature):hover { background: var(--row-hover); }
+
+/* login: a boarding-pass style ticket next to the form */
+.auth-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 48px; align-items: center; max-width: 980px; margin: 24px auto; }
+.auth-split .auth { margin: 0; }
+.pass { display: flex; filter: drop-shadow(0 22px 24px rgba(40,30,10,.18)); transform: rotate(-3deg); animation: float 6s ease-in-out infinite; }
+@keyframes float { 50% { transform: rotate(-2deg) translateY(-6px); } }
+.pass-main { flex: 1; background: var(--ink); color: var(--paper); padding: 26px 26px 30px; border-radius: 10px 0 0 10px; position: relative;
+  -webkit-mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top right / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom right / 100% 51% no-repeat;
+          mask: radial-gradient(circle 10px at 100% 0, transparent 98%, #000) top right / 100% 51% no-repeat, radial-gradient(circle 10px at 100% 100%, transparent 98%, #000) bottom right / 100% 51% no-repeat; }
+.pass-k { font: 600 .66rem var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--on-ink-accent); }
+.pass-title { display: block; font: 700 2.2rem/1.05 var(--serif); margin: 6px 0 18px; }
+.pass dl { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; margin: 0; }
+.pass dt { font: .62rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--on-ink-muted); }
+.pass dd { margin: 2px 0 0; font: 600 1rem var(--sans); }
+.pass-stamp { position: absolute; right: 22px; bottom: 18px; border: 2px solid var(--on-ink-accent); color: var(--on-ink-accent); padding: 3px 9px; font: 700 .7rem var(--mono); letter-spacing: .16em; text-transform: uppercase; transform: rotate(-8deg); border-radius: 3px; opacity: .9; }
+.pass-stub { width: 92px; background: var(--accent); border-radius: 0 10px 10px 0; border-left: 2px dashed color-mix(in srgb, var(--paper) 60%, transparent); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 18px 0;
+  -webkit-mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top left / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom left / 100% 51% no-repeat;
+          mask: radial-gradient(circle 10px at 0 0, transparent 98%, #000) top left / 100% 51% no-repeat, radial-gradient(circle 10px at 0 100%, transparent 98%, #000) bottom left / 100% 51% no-repeat; }
+.pass-stub .bars { width: 46px; height: 120px; background: repeating-linear-gradient(0deg, #fff 0 2px, transparent 2px 4px, #fff 4px 5px, transparent 5px 8px, #fff 8px 11px, transparent 11px 13px); opacity: .9; }
+.pass-no { writing-mode: vertical-rl; font: 600 .62rem var(--mono); letter-spacing: .14em; color: #fff; }
+@media (max-width: 860px) { .auth-split { grid-template-columns: 1fr; } .pass { display: none; } }
+@media (max-width: 720px) { .hero-board { transform: none; } .rubber { width: 82px; height: 82px; right: -4px; bottom: -30px; } .rubber b { font-size: 1.15rem; } .how.steps-3::before { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .swash path { animation: none; stroke-dashoffset: 0; }
+  .rubber { animation: none; opacity: .9; }
+  .pass { animation: none; }
+}
+.how.steps-3 .eyebrow { display: none; }
+body { position: relative; min-height: 100vh; } body::before { position: absolute; }
